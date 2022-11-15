@@ -1,86 +1,55 @@
 <template>
   <div class="task-page">
-    <div class="container">
-      <div class="header-menu">
+    <div class="container max-1010 pt-10p">
+      <a-card class="sign-card">
         <a-tabs v-model:activeKey="activeKey">
           <a-tab-pane key="1">
             <template #tab>
-              <span> 待自己簽署 </span>
+              <span> 上傳檔案 </span>
             </template>
           </a-tab-pane>
           <a-tab-pane key="2">
             <template #tab>
-              <span> 待他人簽署 </span>
-              <a-badge :count="1"> </a-badge>
+              <span> 掃描檔案 </span>
             </template>
           </a-tab-pane>
           <a-tab-pane key="3">
             <template #tab>
-              <span>
-                已完成
-                <a-badge :count="1"> </a-badge>
-              </span>
+              <span> 歷史上傳 </span>
             </template>
           </a-tab-pane>
-          <a-tab-pane key="4">
-            <template #tab>
-              <span> 已取消 </span>
-            </template>
-          </a-tab-pane>
-          <a-tab-pane key="5">
-            <template #tab>
-              <span> 草稿 </span>
-              <a-badge :count="1"> </a-badge>
-            </template>
-          </a-tab-pane>
-          <a-tab-pane key="6">
-            <template #tab>
-              <span> 已封存 </span>
-            </template>
-          </a-tab-pane>
+
+          <!-- <a-tab-pane key="3">
+          <template #tab>
+            <span>
+              <SearchOutlined />
+              通知
+            </span>
+          </template>
+        </a-tab-pane> -->
         </a-tabs>
 
-        <a-dropdown :trigger="['click']">
-          <template #overlay>
-            <a-menu @click="handleMenuClick">
-              <a-menu-item key="1"> 自己簽署 </a-menu-item>
-              <a-menu-item key="2"> 邀請他人簽署 </a-menu-item>
-            </a-menu>
-          </template>
-          <a-button type="primary" size="large">
-            <template #icon>
-              <PlusOutlined />
-            </template>
-            新增
-          </a-button>
-        </a-dropdown>
-      </div>
+        <div>
+          <FileUploader />
+        </div>
+        檔案大小不得超過 10 MB
+      </a-card>
     </div>
 
-    <div class="task-content">
-      <div class="container">
-        <a-empty image="/static/empty_state.png" :image-style="{}">
-          <template #description>
-            <span>目前尚無需簽署的文件</span>
-          </template>
-        </a-empty>
-      </div>
-    </div>
+    <div class="task-content"></div>
   </div>
 </template>
 
 <script>
+import FileUploader from '@/components/sign-and-send/FileUploader.vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 
 import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
 export default defineComponent({
-  components: { PlusOutlined },
+  components: { FileUploader, PlusOutlined },
   setup() {
-    const router = useRouter()
     const handleMenuClick = e => {
       console.log('click', e)
-      router.push({ name: 'sign-and-send' })
     }
     return {
       handleMenuClick,
@@ -91,10 +60,18 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.task-container {
+  padding-top: 10%;
+  max-width: 1010px;
+}
+
 .task-page {
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  background-color: #f1f2f5;
+
+  margin: 0 auto;
   .header-menu {
     display: flex;
     align-items: center;
@@ -102,13 +79,16 @@ export default defineComponent({
   }
 
   .task-content {
-    background-color: #f1f2f5;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+  }
+
+  .sign-card {
+    padding-bottom: 80px;
   }
 }
 .container {
@@ -170,5 +150,13 @@ export default defineComponent({
     width: 1340px;
     max-width: 100%;
   }
+}
+
+.max-1010 {
+  max-width: 1010px;
+}
+
+.pt-10p {
+  padding-top: 10%;
 }
 </style>

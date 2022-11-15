@@ -16,6 +16,14 @@ const routes = [
     }
   },
   {
+    path: '/sign-and-send',
+    name: 'sign-and-send',
+    components: {
+      navbar: () => import(/* webpackChunkName: "task" */ '../components/SignSendNavbar.vue'),
+      default: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/SignAndSendView.vue')
+    }
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting
