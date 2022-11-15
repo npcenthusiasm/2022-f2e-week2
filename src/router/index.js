@@ -8,6 +8,14 @@ const routes = [
     component: HomeView
   },
   {
+    path: '/task',
+    name: 'task',
+    components: {
+      navbar: () => import(/* webpackChunkName: "task" */ '../components/HomeNavbar.vue'),
+      default: () => import(/* webpackChunkName: "task" */ '../views/task/TaskView.vue')
+    }
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting

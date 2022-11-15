@@ -1,6 +1,8 @@
 <template>
   <div class="home">
     <img src="~@/assets/images/Logo.png" alt="" class="logo" />
+    <img src="~@/assets/images/home-bg.png" alt="" class="home-bg" />
+
     <a-card class="home-card">
       <a-tabs v-model:activeKey="activeKey" centered class="home-tabs">
         <a-tab-pane class="login-pane" key="1" tab="登入">
@@ -45,7 +47,7 @@
                 placeholder="請輸入您的電子信箱"
               >
                 <template #prefix>
-                  <UserOutlined class="site-form-item-icon" />
+                  <MailOutlined class="site-form-item-icon" />
                 </template>
               </a-input>
             </a-form-item>
@@ -91,15 +93,17 @@
 </template>
 
 <script>
-import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
+import { MailOutlined, LockOutlined } from '@ant-design/icons-vue'
 
 import { defineComponent, ref, reactive, computed } from 'vue'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   components: {
-    UserOutlined,
+    MailOutlined,
     LockOutlined
   },
   setup() {
+    const router = useRouter()
     const formState = reactive({
       username: '',
       password: '',
@@ -107,6 +111,7 @@ export default defineComponent({
     })
     const onFinish = values => {
       console.log('Success:', values)
+      router.push({ name: 'task' })
     }
     const onFinishFailed = errorInfo => {
       console.log('Failed:', errorInfo)
@@ -170,6 +175,12 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .home-bg {
+    position: absolute;
+    bottom: 0;
+    right: 111px;
   }
 }
 
