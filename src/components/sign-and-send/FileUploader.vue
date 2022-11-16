@@ -1,11 +1,12 @@
 <template>
   <a-upload
     v-model:file-list="fileList"
+    :customRequest="customRequest"
+    accept="application/pdf"
     name="avatar"
     list-type="picture-card"
     class="avatar-uploader"
     :show-upload-list="false"
-    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
     :before-upload="beforeUpload"
     @change="handleChange"
   >
@@ -21,54 +22,86 @@
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { defineComponent, ref } from 'vue'
-function getBase64(img, callback) {
-  const reader = new FileReader()
-  reader.addEventListener('load', () => callback(reader.result))
-  reader.readAsDataURL(img)
-}
+// function getBase64(img, callback) {
+//   const reader = new FileReader()
+//   reader.addEventListener('load', () => callback(reader.result))
+//   reader.readAsDataURL(img)
+// }
 export default defineComponent({
+  emits: ['upload-success'],
   components: {
     LoadingOutlined,
     PlusOutlined
   },
-  setup() {
+  setup(props, { emit }) {
     const fileList = ref([])
     const loading = ref(false)
     const imageUrl = ref('')
+    const customRequest = data => {
+      console.log('data: ', data)
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve((data.file.status = 'done'))
+        }, 2000)
+      })
+    }
     const handleChange = info => {
+      console.log('info: ', info)
+
+      if (!checkFileSize(info.file)) {
+        return
+      }
+      setTimeout(() => {
+        if (info.file.status !== 'done') {
+          info.file.status = 'done'
+          handleChange(info)
+        }
+      }, 2000)
+
       if (info.file.status === 'uploading') {
         loading.value = true
         return
       }
       if (info.file.status === 'done') {
         // Get this url from response in real world.
-        getBase64(info.file.originFileObj, base64Url => {
-          imageUrl.value = base64Url
-          loading.value = false
-        })
-      }
-      if (info.file.status === 'error') {
+        // getBase64(info.file.originFileObj, base64Url => {
+        //   imageUrl.value = base64Url
+        //   loading.value = false
+        // })
         loading.value = false
-        message.error('upload error')
+
+        message.success('上傳成功')
+        emit('upload-success')
       }
+      // if (info.file.status === 'error') {
+      //   loading.value = false
+      //   message.error('upload error')
+      // }
+    }
+
+    const checkFileSize = file => {
+      const isLt10M = file.size / 1024 / 1024 < 10
+      return isLt10M
     }
     const beforeUpload = file => {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-      if (!isJpgOrPng) {
-        message.error('You can only upload JPG file!')
+      // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+      // if (!isJpgOrPng) {
+      //   message.error('You can only upload JPG file!')
+      // }
+      const isLt10M = checkFileSize(file)
+      if (!isLt10M) {
+        message.error('檔案超過 10MB，請選擇其他檔案上傳')
       }
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isLt2M) {
-        message.error('Image must smaller than 2MB!')
-      }
-      return isJpgOrPng && isLt2M
+      return isLt10M
+      // return isJpgOrPng && isLt10M
     }
     return {
       fileList,
       loading,
       imageUrl,
       handleChange,
-      beforeUpload
+      beforeUpload,
+      customRequest
     }
   }
 })

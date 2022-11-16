@@ -32,13 +32,14 @@
         </a-tabs>
 
         <div>
-          <FileUploader />
+          <FileUploader @upload-success="uploadSuccess" />
         </div>
         檔案大小不得超過 10 MB
 
         <a-button @click="$router.push({ name: 'preparedoc' })"
           >preparedoc</a-button
         >
+        <!-- <FileUp /> -->
       </a-card>
     </div>
 
@@ -47,18 +48,26 @@
 </template>
 
 <script>
+// import FileUp from '@/components/sign-and-send/FileUp.vue'
 import FileUploader from '@/components/sign-and-send/FileUploader.vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 
 import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   components: { FileUploader, PlusOutlined },
   setup() {
+    const router = useRouter()
     const handleMenuClick = e => {
       console.log('click', e)
     }
+
+    const uploadSuccess = () => {
+      router.push({ name: 'preparedoc' })
+    }
     return {
       handleMenuClick,
+      uploadSuccess,
       activeKey: ref('1')
     }
   }
@@ -96,73 +105,5 @@ export default defineComponent({
   .sign-card {
     padding-bottom: 80px;
   }
-}
-.container {
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  padding-right: 15px;
-  padding-left: 15px;
-}
-@media (min-width: 476px) {
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-@media (min-width: 768px) {
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-@media (min-width: 476px) {
-  .container {
-    width: 100%;
-  }
-}
-@media (min-width: 768px) {
-  .container {
-    width: 720px;
-    max-width: 100%;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    width: 960px;
-    max-width: 100%;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    width: 1140px;
-    max-width: 100%;
-  }
-}
-@media (min-width: 1400px) {
-  .container {
-    width: 1340px;
-    max-width: 100%;
-  }
-}
-
-.max-1010 {
-  max-width: 1010px;
-}
-
-.pt-10p {
-  padding-top: 10%;
 }
 </style>

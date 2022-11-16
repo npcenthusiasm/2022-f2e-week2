@@ -1,7 +1,11 @@
 <template>
   <div class="task-page">
-    <div class="container max-1010 pt-10p">
-      <a-card class="sign-card">
+    <div class="container max-1010 pt-10p pb-10p">
+      <a-card>
+        <div></div>
+        <div class="mb-15">
+          <router-link to="/sign-and-send/">上一步</router-link>
+        </div>
         <a-form
           :model="formState"
           v-bind="layout"
@@ -11,43 +15,37 @@
         >
           <a-form-item
             :name="['user', 'name']"
-            label="Name"
+            label="文件名稱"
             :rules="[{ required: true }]"
           >
-            <a-input v-model:value="formState.user.name" />
+            <a-input
+              v-model:value="formState.user.name"
+              placeholder="請輸入檔案名稱"
+            />
           </a-form-item>
           <a-form-item
             :name="['user', 'email']"
-            label="Email"
-            :rules="[{ type: 'email' }]"
+            label="上傳文件"
+            :rules="[{ required: true }]"
           >
             <a-input v-model:value="formState.user.email" />
           </a-form-item>
-          <a-form-item
-            :name="['user', 'age']"
-            label="Age"
-            :rules="[{ type: 'number', min: 0, max: 99 }]"
-          >
-            <a-input-number v-model:value="formState.user.age" />
-          </a-form-item>
-          <a-form-item :name="['user', 'website']" label="Website">
-            <a-input v-model:value="formState.user.website" />
-          </a-form-item>
-          <a-form-item :name="['user', 'introduction']" label="Introduction">
-            <a-textarea v-model:value="formState.user.introduction" />
-          </a-form-item>
-          <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
-            <a-button type="primary" html-type="submit">Submit</a-button>
+
+          <a-form-item :name="['user', 'labels']" label="建立標籤">
+            <!-- <a-input v-model:value="formState.user.labels" /> -->
+            <a-select
+              v-model:value="formState.user.labels"
+              mode="tags"
+              style="width: 100%"
+              placeholder="請輸入標籤名稱"
+              :options="options"
+              @change="handleChange"
+            ></a-select>
           </a-form-item>
 
-          <a-select
-            v-model:value="value"
-            mode="tags"
-            style="width: 100%"
-            placeholder="Tags Mode"
-            :options="options"
-            @change="handleChange"
-          ></a-select>
+          <a-form-item>
+            <a-button type="primary" html-type="submit">Submit</a-button>
+          </a-form-item>
         </a-form>
       </a-card>
     </div>
@@ -76,11 +74,11 @@ export default defineComponent({
 
     const layout = {
       labelCol: {
-        span: 8
-      },
-      wrapperCol: {
-        span: 16
+        span: 2
       }
+      // wrapperCol: {
+      //   span: 16
+      // }
     }
 
     const validateMessages = {
@@ -97,7 +95,7 @@ export default defineComponent({
     const formState = reactive({
       user: {
         name: '',
-        age: undefined,
+        labels: [],
         email: '',
         website: '',
         introduction: ''
@@ -122,18 +120,16 @@ export default defineComponent({
       validateMessages,
       value: ref([]),
       handleChange,
-      options: [...Array(25)].map((_, i) => ({
-        value: (i + 10).toString(36) + (i + 1)
-      }))
+      options: ['產品教學', '產品流程', '產品試用', '產品A', '產品B'].map(
+        item => {
+          return {
+            value: item
+          }
+        }
+      )
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
-.sign-card {
-  max-width: 1020px;
-
-  width: 100%;
-}
-</style>
+<style lang="scss" scoped></style>

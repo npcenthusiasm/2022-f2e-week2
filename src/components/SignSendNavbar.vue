@@ -7,10 +7,16 @@
       <a-step title="下載簽署檔案" />
     </a-steps>
 
-    <div></div>
+    <div>
+      <a-space :size="16">
+        <a-button type="primary" ghost @click="showModal">取消</a-button>
+        <a-button type="primary" @click="goNextPage" :disabled="isDisabled"
+          >下一步</a-button
+        >
+      </a-space>
+    </div>
 
-    <a-button type="primary" ghost>取消</a-button>
-    <a-button type="primary" @click="showModal">Open Modal</a-button>
+    <!-- modal -->
     <a-modal v-model:visible="visible" title="警告" @ok="handleOk">
       <p>確定要放棄編輯文件嗎？</p>
 
@@ -29,6 +35,7 @@ import {
 } from '@ant-design/icons-vue'
 
 import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 const routes = [
   {
     path: 'index',
@@ -50,6 +57,7 @@ export default defineComponent({
     DownOutlined
   },
   setup() {
+    const router = useRouter()
     const current = ref(2)
     const visible = ref(false)
     const showModal = () => {
@@ -62,6 +70,11 @@ export default defineComponent({
     const handleCancel = () => {
       visible.value = false
     }
+    const goNextPage = () => {
+      router.push({ name: 'assign-fields' })
+    }
+
+    const isDisabled = ref(false)
     return {
       activeKey: ref('1'),
       current,
@@ -69,7 +82,9 @@ export default defineComponent({
       visible,
       showModal,
       handleCancel,
-      handleOk
+      handleOk,
+      goNextPage,
+      isDisabled
     }
   }
 })

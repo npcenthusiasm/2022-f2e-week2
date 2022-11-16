@@ -1,6 +1,10 @@
 <template>
-  <div class="sign-and-send-page">
-    <router-view class="view"></router-view>
+  <div class="sign-and-send-page bg-primary">
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" class="view" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -10,13 +14,6 @@ export default {}
 
 <style lang="scss" scoped>
 .sign-and-send-page {
-  background-color: #f1f2f5;
-  .view {
-    // padding-top: 10%;
-    // padding-bottom: 10%;
-    // max-width: 1010px;
-    // margin-left: auto;
-    // margin-right: auto;
-  }
+  height: 100%;
 }
 </style>
