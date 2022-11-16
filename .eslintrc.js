@@ -11,6 +11,7 @@ module.exports = {
     parser: '@babel/eslint-parser'
   },
   rules: {
+    'no-template-curly-in-string': 'off',
     'space-before-function-paren': 0,
     'vue/no-unused-components': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',

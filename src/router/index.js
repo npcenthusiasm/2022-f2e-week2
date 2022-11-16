@@ -20,8 +20,24 @@ const routes = [
     name: 'sign-and-send',
     components: {
       navbar: () => import(/* webpackChunkName: "task" */ '../components/SignSendNavbar.vue'),
-      default: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/SignAndSendView.vue')
-    }
+      default: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/IndexView.vue')
+    },
+    children: [
+      {
+        path: '',
+        component: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/SignAndSendView.vue')
+      },
+      {
+        name: 'preparedoc',
+        path: 'preparedoc',
+        component: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/preparedoc/PrepareDocView.vue')
+      },
+      {
+        name: 'assign-fields',
+        path: 'assign-fields',
+        component: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/assign-fields/AssignFields.vue')
+      }
+    ]
   },
   {
     path: '/about',

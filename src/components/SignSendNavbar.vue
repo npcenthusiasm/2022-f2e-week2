@@ -10,6 +10,15 @@
     <div></div>
 
     <a-button type="primary" ghost>取消</a-button>
+    <a-button type="primary" @click="showModal">Open Modal</a-button>
+    <a-modal v-model:visible="visible" title="警告" @ok="handleOk">
+      <p>確定要放棄編輯文件嗎？</p>
+
+      <template #footer>
+        <a-button key="back" @click="handleCancel">取消</a-button>
+        <a-button key="submit" type="primary" @click="handleOk">確認</a-button>
+      </template>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -42,10 +51,25 @@ export default defineComponent({
   },
   setup() {
     const current = ref(2)
+    const visible = ref(false)
+    const showModal = () => {
+      visible.value = true
+    }
+    const handleOk = e => {
+      console.log(e)
+      visible.value = false
+    }
+    const handleCancel = () => {
+      visible.value = false
+    }
     return {
       activeKey: ref('1'),
       current,
-      routes
+      routes,
+      visible,
+      showModal,
+      handleCancel,
+      handleOk
     }
   }
 })

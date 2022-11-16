@@ -1,6 +1,7 @@
 <template>
   <div class="task-page">
     <div class="container max-1010 pt-10p">
+      ro
       <a-card class="sign-card">
         <a-tabs v-model:activeKey="activeKey">
           <a-tab-pane key="1">
@@ -19,6 +20,7 @@
             </template>
           </a-tab-pane>
 
+          <div v-if="activeKey === '2'">23</div>
           <!-- <a-tab-pane key="3">
           <template #tab>
             <span>
@@ -33,6 +35,10 @@
           <FileUploader />
         </div>
         檔案大小不得超過 10 MB
+
+        <a-button @click="$router.push({ name: 'preparedoc' })"
+          >preparedoc</a-button
+        >
       </a-card>
     </div>
 
