@@ -75,6 +75,11 @@
   margin-bottom: 60px !important;
 }
 $primary: #f1f2f5;
+$gray: #EFEFEF;
 .bg-primary {
   background-color: $primary;
+}
+
+.bg-gray {
+  background-color: $gray;
 }

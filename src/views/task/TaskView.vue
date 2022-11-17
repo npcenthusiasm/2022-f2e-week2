@@ -80,7 +80,7 @@ export default defineComponent({
     const router = useRouter()
     const handleMenuClick = e => {
       console.log('click', e)
-      router.push({ name: 'sign-and-send' })
+      router.push('/sign-and-send/')
     }
     return {
       handleMenuClick,

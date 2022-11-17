@@ -57,20 +57,15 @@
 <script>
 import FileUploader from '@/components/sign-and-send/FileUploader.vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   components: { FileUploader, PlusOutlined },
   setup() {
     const router = useRouter()
-
-    const goNextPage = () => {
-      router.push({ name: 'assign-fields' })
-    }
-    const handleMenuClick = e => {
-      console.log('click', e)
-    }
+    const store = useStore()
 
     const layout = {
       labelCol: {
@@ -101,6 +96,20 @@ export default defineComponent({
         introduction: ''
       }
     })
+
+    onMounted(() => {
+      const pdfFile = store.state.pdfFile
+      if (pdfFile) {
+        formState.user.name = pdfFile.name
+        formState.user.email = pdfFile.name
+      }
+    })
+    const goNextPage = () => {
+      router.push({ name: 'assign-fields' })
+    }
+    const handleMenuClick = e => {
+      console.log('click', e)
+    }
 
     const onFinish = values => {
       console.log('Success:', values)

@@ -22,6 +22,7 @@
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
 // function getBase64(img, callback) {
 //   const reader = new FileReader()
 //   reader.addEventListener('load', () => callback(reader.result))
@@ -34,6 +35,7 @@ export default defineComponent({
     PlusOutlined
   },
   setup(props, { emit }) {
+    const store = useStore()
     const fileList = ref([])
     const loading = ref(false)
     const imageUrl = ref('')
@@ -63,6 +65,7 @@ export default defineComponent({
         return
       }
       if (info.file.status === 'done') {
+        store.commit('SET_PDF_FILE', info.file)
         // Get this url from response in real world.
         // getBase64(info.file.originFileObj, base64Url => {
         //   imageUrl.value = base64Url
