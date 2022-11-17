@@ -58,13 +58,19 @@
       </a-layout-sider>
       <a-layout>
         <a-layout-content style="margin: 24px 32px" class="">
+          <!-- <CreateSignCanvas :pdfCanvas="pdfCanvas2" @signPate="signPate" /> -->
           <a-space :size="0" class="tool-bar">
             <a-button class="tool-btn"><PlusOutlined /></a-button>
             <a-button class="tool-btn"><MinusOutlined /></a-button>
             <a-button class="tool-btn"><CompressOutlined /></a-button>
           </a-space>
           <div>
-            <canvas ref="canvas" id="canvas" width="500" height="300"></canvas>
+            <canvas
+              ref="pdfCanvas"
+              id="pdfCanvas"
+              width="500"
+              height="300"
+            ></canvas>
           </div>
         </a-layout-content>
         <a-layout-footer style="text-align: center">
@@ -76,37 +82,33 @@
     <!-- modal -->
     <a-modal
       v-model:visible="visible"
-      width="412px"
-      title="警告"
+      width="646px"
+      :title="modalTitle"
+      :afterClose="afterCloseModal"
       @ok="handleOk"
       :footer="null"
     >
-      <a-tabs v-model:activeKey="activeKey">
-        <a-tab-pane key="1">
-          <template #tab>
-            <span> 簽名 </span>
-          </template>
-        </a-tab-pane>
-        <a-tab-pane key="2">
-          <template #tab>
-            <span> 圖片 </span>
-          </template>
-        </a-tab-pane>
-
-        <!-- <a-tab-pane key="3">
-          <template #tab>
-            <span>
-              <SearchOutlined />
-              通知
-            </span>
-          </template>
-        </a-tab-pane> -->
-      </a-tabs>
-      <div v-if="activeKey === '1'">
-        <a-button block class="sign-btn">
-          創建簽名
-          <PlusOutlined
-        /></a-button>
+      <CreateSignCanvas v-if="modeIs('sign')" :pdfCanvas="pdfCanvas2" />
+      <!-- <CreateSignCanvas v-if="false" /> -->
+      <div v-else>
+        <a-tabs v-model:activeKey="activeKey">
+          <a-tab-pane key="1">
+            <template #tab>
+              <span> 簽名 </span>
+            </template>
+          </a-tab-pane>
+          <a-tab-pane key="2">
+            <template #tab>
+              <span> 圖片 </span>
+            </template>
+          </a-tab-pane>
+        </a-tabs>
+        <div v-if="activeKey === '1'">
+          <a-button block class="sign-btn" @click="createSign">
+            創建簽名
+            <PlusOutlined
+          /></a-button>
+        </div>
       </div>
     </a-modal>
   </div>
@@ -125,9 +127,12 @@ import {
 import { defineComponent, onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { useStore } from 'vuex'
+import CreateSignCanvas from '@/components/assign-fields/CreateSignCanvas.vue'
 
 export default defineComponent({
   components: {
+    CreateSignCanvas,
+    // icons
     CompressOutlined,
     MinusOutlined,
     PlusOutlined,
@@ -140,7 +145,9 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const visible = ref(false)
-    const fabricCanvas = ref(null)
+    const modalTitle = ref('')
+    const currnetMode = ref('')
+    const pdfCanvas2 = ref()
 
     onMounted(() => {
       const pdfFile = store.state.pdfFile
@@ -158,8 +165,18 @@ export default defineComponent({
         content: '載入中 ...',
         prefixCls: 'bg-primary'
       })
-      showModal()
+      // for test
+      // showModal()
+      // setSignMode()
     })
+
+    //
+    const signPate = image => {
+      console.log('image: ', image)
+
+      pdfCanvas2.value.add(image)
+    }
+    //
 
     const readBlob = blob => {
       return new Promise((resolve, reject) => {
@@ -215,9 +232,10 @@ export default defineComponent({
       // const a = true
       // if (a) return
       // 此處 canvas 套用 fabric.js
-      const canvas = new window.fabric.Canvas('canvas')
+      const canvas = new window.fabric.Canvas('pdfCanvas')
+      pdfCanvas2.value = canvas
       console.log('canvas: ', canvas)
-      // fabricCanvas.value = canvas
+      // pdfCanvas.value = canvas
       // document.querySelector('input').addEventListener('change', async (e) => {
       canvas.requestRenderAll()
       const pdfData = await printPDF(file)
@@ -252,15 +270,38 @@ export default defineComponent({
       visible.value = false
     }
 
+    const setSignMode = () => {
+      modalTitle.value = '創建簽名'
+      currnetMode.value = 'sign'
+    }
+
+    const createSign = () => {
+      setSignMode()
+    }
+
+    const modeIs = mode => {
+      return currnetMode.value === mode
+    }
+
+    const afterCloseModal = () => {
+      // reset mode
+      currnetMode.value = ''
+    }
+
     return {
+      afterCloseModal,
+      modeIs,
+      modalTitle,
       visible,
       activeKey: ref('1'),
       showModal,
       handleOk,
       handleCancel,
       clickSignBtn,
-      fabricCanvas,
+      createSign,
+      pdfCanvas2,
       inputOnChange2,
+      signPate,
       collapsed: ref(false),
       selectedKeys: ref(['1'])
     }

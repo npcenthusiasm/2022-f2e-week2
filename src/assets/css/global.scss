@@ -83,3 +83,54 @@ $gray: #EFEFEF;
 .bg-gray {
   background-color: $gray;
 }
+
+
+$neutral-1: #FFFFFF;
+$neutral-2: #F1F2F5;
+$neutral-3: #E3E4EA;
+$neutral-4: #DADBE1;
+$neutral-5: #B7BAC0;
+$neutral-6: #78797D;
+$neutral-7: #191A1B;
+
+
+$primary-1: #3175FA;
+$primary-2: #DCECFF;
+$primary-3: #2465E3;
+
+$secondary-1: #FBBB1E;
+$secondary-2: #E3A200;
+
+$error: #F64331;
+$success: #38D600;
+$warning: #F2BD02;
+
+$file-1: #DF5A3C;
+$file-2: #4F8BFF;
+
+$navy: #37455a;
+$blue: #abbdd3;
+$cyan: #a3d9cb;
+$peach: #ff9d7a;
+$colors: (
+  'neutral-1': $neutral-1,
+  'neutral-2': $neutral-2,
+  'neutral-3': $neutral-3,
+  'neutral-4': $neutral-4,
+  'neutral-5': $neutral-5,
+  'neutral-6': $neutral-6,
+  'neutral-7': $neutral-7
+);
+
+@mixin gen-props($prefix, $property) {
+  @each $color-name, $color in $colors {
+    .#{$prefix}-#{$color-name} {
+      #{$property}: $color
+    }
+  }
+}
+
+@include gen-props('text', 'color');
+@include gen-props('bg', 'background-color');
+@include gen-props('border', 'border-color');
+
