@@ -30,12 +30,17 @@ const routes = [
       {
         name: 'preparedoc',
         path: 'preparedoc',
-        component: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/preparedoc/PrepareDocView.vue')
+        component: () => import(/* webpackChunkName: "preparedoc" */ '../views/sign-and-send/preparedoc/PrepareDocView.vue')
       },
       {
         name: 'assign-fields',
         path: 'assign-fields',
-        component: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/assign-fields/AssignFields.vue')
+        component: () => import(/* webpackChunkName: "assign-fields" */ '../views/sign-and-send/assign-fields/AssignFields.vue')
+      },
+      {
+        name: 'compelete',
+        path: 'compelete',
+        component: () => import(/* webpackChunkName: "compelete" */ '../views/compelete/CompeleteView.vue')
       }
     ]
   },

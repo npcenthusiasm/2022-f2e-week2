@@ -13,6 +13,9 @@
         <a-button type="primary" @click="goNextPage" :disabled="isDisabled"
           >下一步</a-button
         >
+        <a-button class="download" type="primary" @click="downloadPDF2"
+          >下載PDF
+        </a-button>
       </a-space>
     </div>
 
@@ -28,6 +31,7 @@
   </div>
 </template>
 <script>
+import { downloadPDF } from '@/helper/downloadPDF'
 import {
   SearchOutlined,
   UserOutlined,
@@ -36,6 +40,7 @@ import {
 
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 const routes = [
   {
     path: 'index',
@@ -58,6 +63,7 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
+    const store = useStore()
     const current = ref(2)
     const visible = ref(false)
     const showModal = () => {
@@ -71,11 +77,29 @@ export default defineComponent({
       visible.value = false
     }
     const goNextPage = () => {
-      router.push({ name: 'assign-fields' })
+      switch (store.state.progress) {
+        // case 0:
+        // case 1:
+        case 2: {
+          router.push({ name: 'compelete' })
+          break
+        }
+        // case 3:
+
+        default: {
+          router.push({ name: 'assign-fields' })
+        }
+      }
     }
 
     const isDisabled = ref(false)
+    const downloadPDF2 = () => {
+      console.log(2)
+
+      downloadPDF(this.canvasInstance)
+    }
     return {
+      downloadPDF2,
       activeKey: ref('1'),
       current,
       routes,

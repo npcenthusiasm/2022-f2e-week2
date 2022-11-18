@@ -88,7 +88,11 @@
       @ok="handleOk"
       :footer="null"
     >
-      <CreateSignCanvas v-if="modeIs('sign')" :pdfCanvas="pdfCanvas2" />
+      <CreateSignCanvas
+        v-if="modeIs('sign')"
+        :pdfCanvas="pdfCanvas2"
+        @compeleteSign="compeleteSign"
+      />
       <!-- <CreateSignCanvas v-if="false" /> -->
       <div v-else>
         <a-tabs v-model:activeKey="activeKey">
@@ -103,11 +107,45 @@
             </template>
           </a-tab-pane>
         </a-tabs>
+
+        <a-button class="save" type="primary" @click="clickUseBtn"
+          >使用
+        </a-button>
+
         <div v-if="activeKey === '1'">
-          <a-button block class="sign-btn" @click="createSign">
-            創建簽名
-            <PlusOutlined
-          /></a-button>
+          <!-- {{ signHistories }} -->
+
+          <a-radio-group v-model:value="value1">
+            <a-radio-button
+              :value="sign.imgSrc"
+              v-for="sign in signHistories"
+              :key="sign.id"
+            >
+              <img :src="sign.imgSrc" alt="" height="50" />
+            </a-radio-button>
+          </a-radio-group>
+          <a-space direction="vertical" style="display: flex">
+            <a-button
+              style="height: 50px"
+              block
+              class="sign-btn"
+              @click="createSign"
+              v-for="sign in signHistories"
+              :key="sign.id"
+            >
+              <img :src="sign.imgSrc" alt="" height="50" />
+            </a-button>
+
+            <a-button
+              block
+              class="sign-btn"
+              @click="createSign"
+              style="height: 50px"
+            >
+              創建簽名
+              <PlusOutlined
+            /></a-button>
+          </a-space>
         </div>
       </div>
     </a-modal>
@@ -148,8 +186,10 @@ export default defineComponent({
     const modalTitle = ref('')
     const currnetMode = ref('')
     const pdfCanvas2 = ref()
-
+    const signHistories = ref(store.state.signHistories)
+    const value1 = ref('a')
     onMounted(() => {
+      store.commit('SET_PROGRESS_STATE', 2)
       const pdfFile = store.state.pdfFile
       console.log('pdfFile: ', pdfFile)
       console.log(123)
@@ -275,6 +315,11 @@ export default defineComponent({
       currnetMode.value = 'sign'
     }
 
+    const setDefaultMode = () => {
+      modalTitle.value = ''
+      currnetMode.value = ''
+    }
+
     const createSign = () => {
       setSignMode()
     }
@@ -288,17 +333,47 @@ export default defineComponent({
       currnetMode.value = ''
     }
 
+    const compeleteSign = () => {
+      setDefaultMode()
+    }
+
+    const clickUseBtn = () => {
+      handleCancel()
+      signPasteFromSrc(value1.value)
+    }
+
+    const signPasteFromSrc = src => {
+      // const vm = this
+      window.fabric.Image.fromURL(src, function (image) {
+        // 設定簽名出現的位置及大小，後續可調整
+        image.top = 400
+        image.scaleX = 0.5
+        image.scaleY = 0.5
+        pdfCanvas2.value.add(image)
+
+        const resultImg = pdfCanvas2.value.toDataURL('image/png')
+        store.commit('SET_COMPELETE_IMG', resultImg)
+        console.log('resultImg: ', resultImg)
+
+        // vm.$emit('signPate', image)
+        // vm.pdfCanvas.add(image)
+      })
+    }
     return {
+      value1,
+      signHistories,
       afterCloseModal,
       modeIs,
       modalTitle,
       visible,
       activeKey: ref('1'),
       showModal,
+      compeleteSign,
       handleOk,
       handleCancel,
       clickSignBtn,
       createSign,
+      clickUseBtn,
       pdfCanvas2,
       inputOnChange2,
       signPate,

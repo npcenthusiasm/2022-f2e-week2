@@ -51,7 +51,9 @@
 <script>
 import { downloadPDF } from '../../helper/downloadPDF'
 import { PlusOutlined } from '@ant-design/icons-vue'
+import store from '@/store'
 export default {
+  emits: ['compeleteSign'],
   components: {
     PlusOutlined
   },
@@ -145,8 +147,13 @@ export default {
     },
     clickSaveBtn() {
       const newImgSrc = this.canvasInstance.toDataURL('image/png')
+      store.commit('ADD_SIGN_HISTORY', {
+        id: 1,
+        imgSrc: newImgSrc
+      })
+      this.$emit('compeleteSign')
       // this.saveImage()
-      this.signPasteFromSrc(newImgSrc)
+      // this.signPasteFromSrc(newImgSrc)
     },
     signPasteFromSrc(src) {
       const vm = this
