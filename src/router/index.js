@@ -19,7 +19,7 @@ const routes = [
     path: '/sign-and-send',
     name: 'sign-and-send',
     components: {
-      navbar: () => import(/* webpackChunkName: "task" */ '../components/SignSendNavbar.vue'),
+      navbar: () => import(/* webpackChunkName: "task" */ '../components/sign-and-send/SignSendNavbar.vue'),
       default: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/IndexView.vue')
     },
     children: [
@@ -40,7 +40,7 @@ const routes = [
       {
         name: 'compelete',
         path: 'compelete',
-        component: () => import(/* webpackChunkName: "compelete" */ '../views/compelete/CompeleteView.vue')
+        component: () => import(/* webpackChunkName: "compelete" */ '../views/sign-and-send/compelete/CompeleteView.vue')
       }
     ]
   },

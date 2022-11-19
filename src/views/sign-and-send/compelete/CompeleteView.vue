@@ -17,7 +17,7 @@ export default defineComponent({
     const canvas = ref(null)
     onMounted(() => {
       console.log('canvas: ', canvas.value)
-      store.commit('SET_PROGRESS_STATE', 3)
+      store.commit('SET_PROGRESS_STATE', 4)
       var background = new Image()
       background.src = compeleteSrc.value
 

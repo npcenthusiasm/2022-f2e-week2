@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <a-steps v-model:current="current" class="step-bar">
+    <a-steps v-model:current="current" size="small" class="step-bar">
       <a-step title="上傳檔案" />
       <a-step title="確認上傳檔案" />
       <a-step title="製作簽署檔案" />
@@ -69,7 +69,7 @@ export default defineComponent({
     const showModal = () => {
       visible.value = true
     }
-    const handleOk = e => {
+    const handleOk = (e) => {
       console.log(e)
       visible.value = false
     }
@@ -79,15 +79,18 @@ export default defineComponent({
     const goNextPage = () => {
       switch (store.state.progress) {
         // case 0:
-        // case 1:
         case 2: {
+          router.push({ name: 'assign-fields' })
+          break
+        }
+        case 3: {
           router.push({ name: 'compelete' })
           break
         }
         // case 3:
 
         default: {
-          router.push({ name: 'assign-fields' })
+          break
         }
       }
     }
@@ -120,7 +123,7 @@ export default defineComponent({
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 32px;
+  padding: 0px 16px;
 
   height: 68px;
 
@@ -141,7 +144,7 @@ export default defineComponent({
   }
 
   .step-bar {
-    margin: 0 32px;
+    margin: 0 0;
     max-width: 65%;
   }
 }

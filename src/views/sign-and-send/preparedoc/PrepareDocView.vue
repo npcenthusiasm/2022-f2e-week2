@@ -28,6 +28,7 @@
             label="上傳文件"
             :rules="[{ required: true }]"
           >
+            {{ totalPages }} 頁
             <a-input v-model:value="formState.user.email" />
           </a-form-item>
 
@@ -56,6 +57,7 @@
 
 <script>
 import FileUploader from '@/components/sign-and-send/FileUploader.vue'
+import { getPDFTotalPages } from '@/helper/pdf'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -67,6 +69,7 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
 
+    const totalPages = ref(0)
     const layout = {
       labelCol: {
         span: 2
@@ -98,29 +101,37 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      store.commit('SET_PROGRESS_STATE', 2)
+
       const pdfFile = store.state.pdfFile
+
       if (pdfFile) {
         formState.user.name = pdfFile.name
         formState.user.email = pdfFile.name
+        getPDFTotalPages(pdfFile.originFileObj).then((pages) => {
+          console.log('pages: ', pages)
+          totalPages.value = pages
+        })
       }
     })
     const goNextPage = () => {
       router.push({ name: 'assign-fields' })
     }
-    const handleMenuClick = e => {
+    const handleMenuClick = (e) => {
       console.log('click', e)
     }
 
-    const onFinish = values => {
+    const onFinish = (values) => {
       console.log('Success:', values)
       goNextPage()
     }
 
-    const handleChange = value => {
+    const handleChange = (value) => {
       console.log(`selected ${value}`)
     }
 
     return {
+      totalPages,
       handleMenuClick,
       activeKey: ref('1'),
       formState,
@@ -130,7 +141,7 @@ export default defineComponent({
       value: ref([]),
       handleChange,
       options: ['產品教學', '產品流程', '產品試用', '產品A', '產品B'].map(
-        item => {
+        (item) => {
           return {
             value: item
           }

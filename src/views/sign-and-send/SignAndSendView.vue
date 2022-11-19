@@ -52,12 +52,17 @@
 import FileUploader from '@/components/sign-and-send/FileUploader.vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 export default defineComponent({
   components: { FileUploader, PlusOutlined },
   setup() {
     const router = useRouter()
+    const store = useStore()
+    onMounted(() => {
+      store.commit('SET_PROGRESS_STATE', 1)
+    })
     const handleMenuClick = e => {
       console.log('click', e)
     }

@@ -1,4 +1,3 @@
-
 /**
  * NOTE: require jsPDF library
  */
@@ -19,5 +18,3 @@ export const downloadPDF = (canvas) => {
   // 將檔案取名並下載
   pdf.save('download.pdf')
 }
-
-// export default downloadPDF
