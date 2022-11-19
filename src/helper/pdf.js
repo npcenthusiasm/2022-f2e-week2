@@ -1,5 +1,4 @@
 const readBlob = (blob) => {
-  console.log('blob: ', blob)
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.addEventListener('load', () => resolve(reader.result))
@@ -10,7 +9,6 @@ const readBlob = (blob) => {
 
 // TODO: : 需要再整理
 export const getPDFTotalPages = async (pdfData) => {
-  console.log('pdfData: ', pdfData)
   const Base64Prefix = 'data:application/pdf;base64,'
   // 將檔案處理成 base64
   pdfData = await readBlob(pdfData)
@@ -18,7 +16,7 @@ export const getPDFTotalPages = async (pdfData) => {
   // 將 base64 中的前綴刪去，並進行解碼
   const data = atob(pdfData.substring(Base64Prefix.length))
   const pdfDoc = await window.pdfjsLib.getDocument({ data }).promise
-  console.log('pdfDoc: ', pdfDoc)
+
   return pdfDoc.numPages
 }
 
@@ -36,7 +34,7 @@ export const pdfToImage = async (pdfData) => {
 
 export const printMultiPage = async (pdfData) => {
   const Base64Prefix = 'data:application/pdf;base64,'
-  console.log('typeof pdfData: ', typeof pdfData)
+
   // 將檔案處理成 base64
   pdfData = await readBlob(pdfData)
 

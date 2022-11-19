@@ -17,13 +17,13 @@ const routes = [
   },
   {
     path: '/sign-and-send',
-    name: 'sign-and-send',
     components: {
       navbar: () => import(/* webpackChunkName: "task" */ '../components/sign-and-send/SignSendNavbar.vue'),
       default: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/IndexView.vue')
     },
     children: [
       {
+        name: 'sign-and-send',
         path: '',
         component: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/SignAndSendView.vue')
       },

@@ -17,7 +17,11 @@
           </div>
         </div>
 
-        <div class="preview-btn text-neutral-6" @click="showPreviewSide">
+        <div
+          class="preview-btn text-neutral-6"
+          @click="togglePreviewSide"
+          :class="visableDrawer ? ['text-primary-1'] : []"
+        >
           <EyeOutlined />
           <span class="preview-text">預覽</span>
         </div>
@@ -48,7 +52,11 @@
       </a-layout-sider>
 
       <a-layout style="position: relative; overflow: hidden">
-        <PDFDrawer :visable="visableDrawer" @onClose="drawerOnClose" />
+        <PDFDrawer
+          :visable="visableDrawer"
+          @onClose="drawerOnClose"
+          :images="images"
+        />
 
         <a-layout-content style="margin: 24px 32px" class="">
           <!-- <CreateSignCanvas :pdfCanvas="pdfCanvas2" @signPate="signPate" /> -->
@@ -71,10 +79,16 @@
               <div class="viewer">
                 <div
                   class="page-container"
-                  v-for="item in pdfAllPageCanvas"
+                  v-for="(item, index) in pdfAllPageCanvas"
                   :key="item"
                 >
-                  <PageCanvas class="" :canvas="item"> </PageCanvas>
+                  <PageCanvas
+                    class=""
+                    :canvas="item"
+                    :page="index + 1"
+                    @onCanvasLoaded="onCanvasLoaded"
+                  >
+                  </PageCanvas>
                 </div>
               </div>
               <!-- <canvas
@@ -197,21 +211,19 @@ export default defineComponent({
     const signHistories = ref(store.state.signHistories)
     const selectedSign = ref('') // img arc
     const pdfAllPageCanvas = ref([])
+    const images = ref([])
     const visableDrawer = ref(false)
 
     onMounted(() => {
-      store.commit('SET_PROGRESS_STATE', 3)
+      store.commit('SET_PROGRESS_STATE', 2)
       const pdfFile = store.state.pdfFile
-      console.log('pdfFile: ', pdfFile)
 
       if (pdfFile) {
-        console.log(1)
         renderPDF(pdfFile.originFileObj)
-        console.log(3)
       }
 
       message.success({
-        duration: 20,
+        // duration: 20,
         content: '載入中 ...',
         prefixCls: 'bg-primary'
       })
@@ -239,7 +251,7 @@ export default defineComponent({
 
     //
     // const signPate = (image) => {
-    //   console.log('image: ', image)
+    //
     //   pdfCanvas2.value.add(image)
     // }
 
@@ -249,8 +261,6 @@ export default defineComponent({
     }
 
     const clickSignBtn = (e) => {
-      console.log('e: ', e)
-      console.log('clickSignBtn')
       showModal()
     }
 
@@ -259,7 +269,6 @@ export default defineComponent({
       modalVisible.value = true
     }
     const handleOk = (e) => {
-      console.log(e)
       modalVisible.value = false
     }
     const handleCancel = () => {
@@ -315,11 +324,26 @@ export default defineComponent({
 
         const resultImg = pdfCanvas2.value.toDataURL('image/png')
         store.commit('SET_COMPELETE_IMG', resultImg)
-        console.log('resultImg: ', resultImg)
 
         // vm.$emit('signPate', image)
         // vm.pdfCanvas.add(image)
       })
+    }
+
+    const onCanvasLoaded = (page, canvas) => {
+      const image = canvas.toDataURL('image/png')
+
+      images.value.push({
+        page,
+        image
+      })
+    }
+    const togglePreviewSide = () => {
+      if (visableDrawer.value) {
+        drawerOnClose()
+      } else {
+        showPreviewSide()
+      }
     }
     const showPreviewSide = () => {
       visableDrawer.value = true
@@ -351,9 +375,13 @@ export default defineComponent({
       collapsed: ref(false),
       sideNavSelcted: ref(['1']),
       // previre
-      showPreviewSide,
       visableDrawer,
+      togglePreviewSide,
+      showPreviewSide,
       drawerOnClose,
+      // props canvas
+      onCanvasLoaded,
+      images,
       // test
       inputOnChange2
     }

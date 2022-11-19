@@ -1,14 +1,19 @@
 <template>
   <div>
-    <canvas ref="canvas" id="canvas" width="500" height="300"></canvas>
+    <!-- <canvas ref="canvas" id="canvas" width="500" height="300"></canvas> -->
+    <FileUp />
   </div>
 </template>
 <script>
+import FileUp from '@/components/sign-and-send/FileUp.vue'
+import { message } from 'ant-design-vue'
 import { defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default defineComponent({
-  components: {},
+  components: {
+    FileUp
+  },
   setup() {
     const store = useStore()
     const compeleteSrc = ref(store.state.compeleteSrc)
@@ -16,16 +21,18 @@ export default defineComponent({
     console.log('compeleteSrc: ', compeleteSrc.value)
     const canvas = ref(null)
     onMounted(() => {
-      console.log('canvas: ', canvas.value)
-      store.commit('SET_PROGRESS_STATE', 4)
-      const background = new Image()
-      background.src = compeleteSrc.value
+      message.success('創建成功')
+      store.commit('SET_PROGRESS_STATE', 3)
 
-      const ctx = canvas.value.getContext('2d')
-      console.log('ctx: ', ctx)
-      background.onload = function () {
-        ctx.drawImage(background, 0, 0)
-      }
+      // console.log('canvas: ', canvas.value)
+      // const background = new Image()
+      // background.src = compeleteSrc.value
+
+      // const ctx = canvas.value.getContext('2d')
+      // console.log('ctx: ', ctx)
+      // background.onload = function () {
+      //   ctx.drawImage(background, 0, 0)
+      // }
       // ctx.drawImage(compeleteSrc, 0, 0)
       // ctx.setBackgroundImage(
       //   compeleteSrc,

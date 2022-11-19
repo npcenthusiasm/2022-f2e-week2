@@ -36,10 +36,15 @@
             :rules="[{ required: true }]"
           >
             <div class="update-file-info">
-              <div class="page text-neutral-6">{{ totalPages }}頁</div>
-              <div class="file-info-name text-neutral-7">
-                {{ formState.user.email }}
-              </div>
+              <LoadingOutlined
+                v-if="$store.state.pdfFile && totalPages === 0"
+              />
+              <template v-else>
+                <div class="page text-neutral-6">{{ totalPages }}頁</div>
+                <div class="file-info-name text-neutral-7">
+                  {{ formState.user.email }}
+                </div>
+              </template>
             </div>
             <!-- <a-input v-model:value="formState.user.email" /> -->
           </a-form-item>
@@ -74,18 +79,31 @@
 <script>
 import FileUploader from '@/components/sign-and-send/FileUploader.vue'
 import { getPDFTotalPages } from '@/helper/pdf'
-import { PlusOutlined } from '@ant-design/icons-vue'
-import { defineComponent, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
+import { defineComponent, onBeforeMount, onMounted, reactive, ref } from 'vue'
+import { onBeforeRouteUpdate, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 export default defineComponent({
-  components: { FileUploader, PlusOutlined },
+  components: { FileUploader, PlusOutlined, LoadingOutlined },
+  // beforeRouteEnter(to, from, next) {
+  //   console.log('beforeRouteEnter')
+  //   // const router = useRouter()
+  //   const store = useStore()
+  //   console.log('store: ', store)
+  //   console.log('store.state: ', store.state)
+  //   // if (store.state.pdfFile === null) {
+  //   //   router.replace({ path: '/sign-and-send/' })
+  //   // } else {
+  //   //   next()
+  //   // }
+  // },
   setup() {
     const router = useRouter()
     const store = useStore()
 
     const totalPages = ref(0)
+
     const layout = {
       labelCol: {
         span: 2
@@ -116,8 +134,19 @@ export default defineComponent({
       }
     })
 
+    onBeforeMount(() => {
+      const pdfFile = store.state.pdfFile
+      console.log('pdfFile: ', pdfFile)
+      if (!pdfFile) {
+        router.replace({ path: '/task' })
+      }
+    })
+    onBeforeRouteUpdate((to, from) => {
+      console.log('beforeRouteEnter')
+    })
+
     onMounted(() => {
-      store.commit('SET_PROGRESS_STATE', 2)
+      store.commit('SET_PROGRESS_STATE', 1)
 
       const pdfFile = store.state.pdfFile
 

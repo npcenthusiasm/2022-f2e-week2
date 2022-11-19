@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <a-steps v-model:current="current" size="small" class="step-bar">
+    <a-steps :current="current" size="small" class="step-bar">
       <a-step title="上傳檔案" />
       <a-step title="確認上傳檔案" />
       <a-step title="製作簽署檔案" />
@@ -9,6 +9,8 @@
 
     <div>
       <a-space :size="16">
+        <QuestionCircleOutlined />
+
         <a-button type="primary" ghost @click="showModal">取消</a-button>
         <a-button type="primary" @click="goNextPage" :disabled="isDisabled"
           >下一步</a-button
@@ -35,10 +37,11 @@ import { downloadPDF } from '@/helper/downloadPDF'
 import {
   SearchOutlined,
   UserOutlined,
-  DownOutlined
+  DownOutlined,
+  QuestionCircleOutlined
 } from '@ant-design/icons-vue'
 
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 const routes = [
@@ -55,16 +58,18 @@ const routes = [
     breadcrumbName: 'Third-level Menu'
   }
 ]
+
 export default defineComponent({
   components: {
     UserOutlined,
     SearchOutlined,
-    DownOutlined
+    DownOutlined,
+    QuestionCircleOutlined
   },
   setup() {
     const router = useRouter()
     const store = useStore()
-    const current = ref(2)
+    const current = computed(() => store.state.progress)
     const visible = ref(false)
     const showModal = () => {
       visible.value = true
@@ -79,11 +84,11 @@ export default defineComponent({
     const goNextPage = () => {
       switch (store.state.progress) {
         // case 0:
-        case 2: {
+        case 1: {
           router.push({ name: 'assign-fields' })
           break
         }
-        case 3: {
+        case 2: {
           router.push({ name: 'compelete' })
           break
         }

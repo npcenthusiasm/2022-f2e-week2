@@ -41,7 +41,7 @@
         </a-tabs>
 
         <div class="dp-btn">
-          <a-dropdown :trigger="['click']" :overlayClassName="['task-dp']">
+          <a-dropdown :trigger="['click']" overlayClassName="task-dp">
             <template #overlay>
               <a-menu @click="handleMenuClick">
                 <a-menu-item key="1">
@@ -107,7 +107,7 @@
             </template>
             <template #suffix>
               <a-tooltip title="Extra information">
-                <info-circle-outlined style="color: rgba(0, 0, 0, 0.45)" />
+                <InfoCircleOutlined style="color: rgba(0, 0, 0, 0.45)" />
               </a-tooltip>
             </template>
           </a-input>
@@ -145,7 +145,8 @@ import {
   SearchOutlined,
   BarsOutlined,
   AppstoreOutlined,
-  ReloadOutlined
+  ReloadOutlined,
+  InfoCircleOutlined
 } from '@ant-design/icons-vue'
 
 import { defineComponent, ref } from 'vue'
@@ -160,6 +161,7 @@ export default defineComponent({
     BarsOutlined,
     AppstoreOutlined,
     ReloadOutlined,
+    InfoCircleOutlined,
     SignPersonallySvg,
     SignInvitationSvg
   },

@@ -60,7 +60,7 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     onMounted(() => {
-      store.commit('SET_PROGRESS_STATE', 1)
+      store.commit('SET_PROGRESS_STATE', 0)
     })
     const handleMenuClick = (e) => {
       console.log('click', e)
