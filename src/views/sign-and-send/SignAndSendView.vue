@@ -1,7 +1,6 @@
 <template>
   <div class="task-page">
     <div class="container max-1010 pt-10p">
-      ro
       <a-card class="sign-card">
         <a-tabs v-model:activeKey="activeKey">
           <a-tab-pane key="1">
@@ -63,7 +62,7 @@ export default defineComponent({
     onMounted(() => {
       store.commit('SET_PROGRESS_STATE', 1)
     })
-    const handleMenuClick = e => {
+    const handleMenuClick = (e) => {
       console.log('click', e)
     }
 

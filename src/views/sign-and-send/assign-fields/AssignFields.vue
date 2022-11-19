@@ -16,6 +16,11 @@
             <a-tag color="green">產品教學</a-tag>
           </div>
         </div>
+
+        <div class="preview-btn text-neutral-6" @click="showPreviewSide">
+          <EyeOutlined />
+          <span class="preview-text">預覽</span>
+        </div>
       </div>
     </a-layout-header>
 
@@ -42,7 +47,9 @@
         </a-menu>
       </a-layout-sider>
 
-      <a-layout>
+      <a-layout style="position: relative; overflow: hidden">
+        <PDFDrawer :visable="visableDrawer" @onClose="drawerOnClose" />
+
         <a-layout-content style="margin: 24px 32px" class="">
           <!-- <CreateSignCanvas :pdfCanvas="pdfCanvas2" @signPate="signPate" /> -->
           <a-space :size="0" class="tool-bar">
@@ -151,7 +158,8 @@ import {
   TeamOutlined,
   FileOutlined,
   FormOutlined,
-  TagOutlined
+  TagOutlined,
+  EyeOutlined
 } from '@ant-design/icons-vue'
 import { defineComponent, onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
@@ -160,11 +168,13 @@ import CreateSignCanvas from '@/components/assign-fields/CreateSignCanvas.vue'
 
 import { printMultiPage } from '../../../helper/pdf'
 import PageCanvas from '@/components/assign-fields/PageCanvas.vue'
+import PDFDrawer from '@/components/sign-and-send/PDFDrawer.vue'
 
 export default defineComponent({
   components: {
     PageCanvas,
     CreateSignCanvas,
+    PDFDrawer,
     // icons
     CompressOutlined,
     MinusOutlined,
@@ -175,7 +185,8 @@ export default defineComponent({
     TeamOutlined,
     FileOutlined,
     FormOutlined,
-    TagOutlined
+    TagOutlined,
+    EyeOutlined
   },
   setup() {
     const store = useStore()
@@ -186,6 +197,8 @@ export default defineComponent({
     const signHistories = ref(store.state.signHistories)
     const selectedSign = ref('') // img arc
     const pdfAllPageCanvas = ref([])
+    const visableDrawer = ref(false)
+
     onMounted(() => {
       store.commit('SET_PROGRESS_STATE', 3)
       const pdfFile = store.state.pdfFile
@@ -308,6 +321,12 @@ export default defineComponent({
         // vm.pdfCanvas.add(image)
       })
     }
+    const showPreviewSide = () => {
+      visableDrawer.value = true
+    }
+    const drawerOnClose = () => {
+      visableDrawer.value = false
+    }
     return {
       selectedSign,
       signHistories,
@@ -331,6 +350,10 @@ export default defineComponent({
       // sideer layout
       collapsed: ref(false),
       sideNavSelcted: ref(['1']),
+      // previre
+      showPreviewSide,
+      visableDrawer,
+      drawerOnClose,
       // test
       inputOnChange2
     }
@@ -340,6 +363,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .assign-fields-page {
   .layout-header {
+    position: relative;
+    z-index: 10;
     background-color: #fff;
     padding-left: 24px;
     padding-right: 24px;
@@ -416,6 +441,15 @@ export default defineComponent({
     //   flex-shrink: 0;
     //   display: flex;
     //   flex-direction: column;
+  }
+
+  .preview-btn {
+    margin-left: auto;
+    font-weight: 500;
+    cursor: pointer;
+    .preview-text {
+      margin-left: 8px;
+    }
   }
 
   // .view-wrapper {

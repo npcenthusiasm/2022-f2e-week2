@@ -157,3 +157,20 @@ $colors: (
     margin-right: 24px;
   }
 }
+
+.task-page {
+  .doc-form {
+    .ant-form-item-label label {
+      // font-size: 20px;
+    }
+  }
+}
+
+.pdf-drawer {
+  .ant-drawer-content-wrapper {
+    box-shadow: 0px 0px 20px rgba(25, 26, 27, 0.15) !important;
+  }
+  .ant-drawer-mask {
+    background-color: transparent;
+  }
+}
