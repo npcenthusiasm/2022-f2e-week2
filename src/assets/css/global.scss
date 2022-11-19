@@ -84,6 +84,7 @@ $gray: #EFEFEF;
   background-color: $gray;
 }
 
+$black: #000000;
 
 $neutral-1: #FFFFFF;
 $neutral-2: #F1F2F5;
@@ -113,6 +114,7 @@ $blue: #abbdd3;
 $cyan: #a3d9cb;
 $peach: #ff9d7a;
 $colors: (
+  'black': $black,
   'neutral-1': $neutral-1,
   'neutral-2': $neutral-2,
   'neutral-3': $neutral-3,
@@ -134,3 +136,24 @@ $colors: (
 @include gen-props('bg', 'background-color');
 @include gen-props('border', 'border-color');
 
+
+// global class
+.task-dp {
+  .dp-item {
+    display: flex;
+    align-items: center;
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .desc {
+      font-size: 12px;
+      font-weight: 400;
+    }
+  }
+
+  .dp-item-img {
+    flex-shrink: 0;
+    margin-right: 24px;
+  }
+}

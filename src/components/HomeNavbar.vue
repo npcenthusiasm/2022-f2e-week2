@@ -44,29 +44,25 @@
     </div>
 
     <div>
-      <a-dropdown :trigger="['click']">
-        <a class="ant-dropdown-link" @click.prevent>
-          <a-avatar style="background-color: #87d068">
-            <template #icon>
-              <UserOutlined />
-            </template>
-          </a-avatar>
-          <div class="username">usrname</div>
-          <DownOutlined />
-        </a>
-        <template #overlay>
-          <a-menu>
-            <a-menu-item key="0">
-              <a href="#">1st menu item</a>
-            </a-menu-item>
-            <a-menu-item key="1">
-              <a href="#">2nd menu item</a>
-            </a-menu-item>
-            <a-menu-divider />
-            <a-menu-item key="3">3rd menu item</a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown>
+      <a-space :size="24">
+        <QuestionCircleOutlined />
+        <a-dropdown :trigger="['click']">
+          <a class="ant-dropdown-link" @click.prevent style="display: block">
+            <a-avatar style="background-color: #87d068">
+              <template #icon>
+                <UserOutlined />
+              </template>
+            </a-avatar>
+            <div class="username text-neutral-7">Jenny Wu</div>
+            <DownOutlined />
+          </a>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item key="3">登出</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </a-space>
     </div>
   </div>
 </template>
@@ -74,7 +70,8 @@
 import {
   SearchOutlined,
   UserOutlined,
-  DownOutlined
+  DownOutlined,
+  QuestionCircleOutlined
 } from '@ant-design/icons-vue'
 
 import { defineComponent, ref } from 'vue'
@@ -96,7 +93,8 @@ export default defineComponent({
   components: {
     UserOutlined,
     SearchOutlined,
-    DownOutlined
+    DownOutlined,
+    QuestionCircleOutlined
   },
   setup() {
     return {
@@ -113,7 +111,7 @@ export default defineComponent({
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 32px;
+  padding: 0px 16px;
 
   height: 68px;
 
