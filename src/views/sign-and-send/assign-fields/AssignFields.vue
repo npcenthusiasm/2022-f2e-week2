@@ -77,6 +77,76 @@
           </a-tab-pane>
         </a-tabs>
 
+        <div v-if="modalMenuTabSelected === '1'">
+          <!-- modal 使用簽名 -->
+          <a-button class="save" type="primary" @click="clickUseBtn"
+            >使用
+          </a-button>
+          <a-radio-group v-model:value="selectedSign">
+            <a-radio-button
+              :value="sign.imgSrc"
+              v-for="sign in signHistories"
+              :key="sign.id"
+            >
+              <img :src="sign.imgSrc" alt="" height="50" />
+            </a-radio-button>
+          </a-radio-group>
+
+          <a-button
+            block
+            class="sign-btn"
+            @click="createSign"
+            style="height: 50px"
+          >
+            創建簽名
+            <PlusOutlined
+          /></a-button>
+        </div>
+
+        <div v-else-if="modalMenuTabSelected === '2'">
+          <div class="file-upload-content">
+            <FileUploader2 @upload-success="uploadSuccess" />
+            <a-radio-group v-model:value="selectedImg">
+              <a-radio-button
+                :value="image.id"
+                v-for="image in updateLoadImageList"
+                :key="image.id"
+              >
+                <img :src="image.url" alt="" width="126" height="126" />
+              </a-radio-button>
+            </a-radio-group>
+            <!-- <img
+              v-for="imageUrl in updateLoadImageList"
+              :key="imageUrl"
+              :src="imageUrl"
+              @click="selectImg"
+              width="126"
+              height="126"
+              alt="avatar"
+            /> -->
+          </div>
+          <!-- modal 使用簽名 -->
+          <a-button class="save" type="primary" @click="clickUseImgBtn"
+            >使用
+          </a-button>
+        </div>
+      </div>
+
+      <!-- 圖片 -->
+      <div v-else-if="modeIs('img')">
+        <a-tabs v-model:activeKey="modalMenuTabSelected">
+          <a-tab-pane key="1">
+            <template #tab>
+              <span> 簽名 </span>
+            </template>
+          </a-tab-pane>
+          <a-tab-pane key="2">
+            <template #tab>
+              <span> 圖片 </span>
+            </template>
+          </a-tab-pane>
+        </a-tabs>
+
         <!-- modal 使用簽名 -->
         <a-button class="save" type="primary" @click="clickUseBtn"
           >使用
@@ -180,12 +250,14 @@ import AssignFiieldHeader from '@/components/assign-fields/AssignFiieldHeader.vu
 import AssignFieldsContent from '@/components/assign-fields/AssignFieldsContent.vue'
 import { useMouse } from '@vueuse/core'
 import { formatDateString } from '../../../helper/date'
+import FileUploader2 from '@/components/assign-fields/FileUploader2.vue'
 
 export default defineComponent({
   components: {
     AssignFiieldHeader,
     AssignFieldsContent,
     CreateSignCanvas,
+    FileUploader2,
     PDFDrawer,
     // icons
     PlusOutlined,
@@ -205,6 +277,11 @@ export default defineComponent({
     const sideNavSelcted = ref(['nav-text'])
     // text
     const selectedText = ref('')
+    // img
+    const selectedImg = ref('')
+    const updateLoadImageList = ref([])
+    const modalMenuTabSelected = ref('1')
+
     // date
     const selectedDate = ref('')
     const dateList = ref([
@@ -289,6 +366,11 @@ export default defineComponent({
       setDefaultMode()
     }
 
+    const clickUseImgBtn = () => {
+      handleCancel()
+      insertMode.value = true
+    }
+
     const clickUseBtn = () => {
       handleCancel()
       insertMode.value = true
@@ -332,7 +414,18 @@ export default defineComponent({
       canvas.add(text)
     }
 
-    const handleNamePaste = (canvas) => {
+    const handleImgPaste = (canvas) => {
+      const img = updateLoadImageList.value.find(
+        (item) => item.id === selectedImg.value
+      )
+
+      addImgToCanvasBySrc(canvas, {
+        x: mouse.x,
+        y: mouse.y,
+        imgSrc: img.url
+      })
+    }
+    const handleSignNamePaste = (canvas) => {
       addImgToCanvasBySrc(canvas, {
         x: mouse.x,
         y: mouse.y,
@@ -343,8 +436,15 @@ export default defineComponent({
       if (!insertMode.value) return
 
       const navSelect = sideNavSelcted.value[0]
-      if (navSelect === 'nav-name') {
-        handleNamePaste(canvas)
+
+      if (navSelect === 'nav-name' && modalMenuTabSelected.value === '2') {
+        handleImgPaste(canvas)
+        insertMode.value = false
+        return
+      }
+
+      if (navSelect === 'nav-name' && modalMenuTabSelected.value === '1') {
+        handleSignNamePaste(canvas)
         insertMode.value = false
         return
       }
@@ -394,6 +494,13 @@ export default defineComponent({
       visableDrawer.value = false
     }
 
+    const uploadSuccess = (image) => {
+      updateLoadImageList.value.push({
+        url: image,
+        id: Date.now()
+      })
+    }
+
     return {
       selectedSign,
       signHistories,
@@ -405,7 +512,7 @@ export default defineComponent({
       // modal
       modalTitle,
       modalVisible,
-      modalMenuTabSelected: ref('1'),
+      modalMenuTabSelected,
       showModal,
       handleOk,
       handleCancel,
@@ -432,7 +539,12 @@ export default defineComponent({
       clickUseDateBtn,
       // text
       selectedText,
-      clickUseTexteBtn
+      clickUseTexteBtn,
+      // img
+      updateLoadImageList,
+      uploadSuccess,
+      clickUseImgBtn,
+      selectedImg
     }
   }
 })

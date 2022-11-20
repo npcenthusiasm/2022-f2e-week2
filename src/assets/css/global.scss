@@ -207,3 +207,17 @@ $colors: (
     color: #4F8BFF;;
   }
 }
+
+.assign-fields-page {
+
+}
+.file-upload-content {
+  display: flex;
+  align-items: center;
+  .ant-radio-button-wrapper {
+    // font-size: 20px;
+    height: auto !important;
+    padding: 0;
+    margin: 0 8px;
+  }
+} 
