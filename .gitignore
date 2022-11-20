@@ -24,3 +24,5 @@ pnpm-debug.log*
 
 # other files
 public/static/*.pdf
+src/components/sign-and-send/FileUp.vue
+src/components/sign-and-send/PDFDrawerContent2.vue
