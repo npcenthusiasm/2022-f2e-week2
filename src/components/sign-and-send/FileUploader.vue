@@ -39,17 +39,14 @@ export default defineComponent({
     const fileList = ref([])
     const loading = ref(false)
     const imageUrl = ref('')
-    const customRequest = data => {
-      console.log('data: ', data)
-      return new Promise(resolve => {
+    const customRequest = (data) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve((data.file.status = 'done'))
         }, 2000)
       })
     }
-    const handleChange = info => {
-      console.log('info: ', info)
-
+    const handleChange = (info) => {
       if (!checkFileSize(info.file)) {
         return
       }
@@ -82,11 +79,11 @@ export default defineComponent({
       // }
     }
 
-    const checkFileSize = file => {
+    const checkFileSize = (file) => {
       const isLt10M = file.size / 1024 / 1024 < 10
       return isLt10M
     }
-    const beforeUpload = file => {
+    const beforeUpload = (file) => {
       // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
       // if (!isJpgOrPng) {
       //   message.error('You can only upload JPG file!')

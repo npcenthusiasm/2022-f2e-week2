@@ -41,9 +41,9 @@
         </a-space>
       </div>
 
-      <a-button class="download" type="primary" @click="downloadPDF2"
+      <!-- <a-button class="download" type="primary" @click="downloadPDF2"
         >下載PDF
-      </a-button>
+      </a-button> -->
     </div>
   </div>
 </template>
@@ -65,9 +65,7 @@ export default {
   },
 
   mounted() {
-    console.log('123')
     const canvas = this.$refs.canvas
-    console.log(canvas)
 
     const ctx = canvas.getContext('2d')
 
@@ -99,7 +97,6 @@ export default {
     },
     getPaintPosition(e) {
       const canvasSize = this.canvasInstance.getBoundingClientRect()
-      console.log('canvasSize: ', canvasSize)
 
       if (e.type === 'mousemove') {
         return {
@@ -155,7 +152,6 @@ export default {
     // },
 
     downloadPDF2() {
-      console.log(2)
       downloadPDF(this.canvasInstance)
     }
   }

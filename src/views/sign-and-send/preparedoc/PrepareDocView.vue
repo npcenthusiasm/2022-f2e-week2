@@ -178,8 +178,8 @@ export default defineComponent({
             totalPages.value = pages
           })
           .catch((err) => {
-            console.log('err: ', err)
             message.warn('發生未知錯誤')
+            throw new Error(err)
           })
       }
     })
@@ -188,13 +188,11 @@ export default defineComponent({
     //   goNextPage()
     // }
     const goNextPage = () => {
-      console.log(123)
       router.push({ name: 'assign-fields' })
     }
     const handleMenuClick = (e) => {}
 
     const onFinish = (values) => {
-      console.log('values: ', values)
       goNextPage()
     }
 

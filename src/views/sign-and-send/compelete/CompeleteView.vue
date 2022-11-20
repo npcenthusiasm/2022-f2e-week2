@@ -60,8 +60,6 @@ export default defineComponent({
 
     const canvas = ref(null)
     onMounted(() => {
-      console.log('mounted')
-
       message.success('創建成功')
       store.commit('SET_PROGRESS_STATE', 3)
 

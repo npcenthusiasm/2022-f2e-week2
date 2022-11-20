@@ -41,7 +41,6 @@ export default defineComponent({
     const loading = ref(false)
     const imageUrl = ref('')
     const customRequest = (data) => {
-      console.log('data: ', data)
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve((data.file.status = 'done'))
@@ -49,8 +48,6 @@ export default defineComponent({
       })
     }
     const handleChange = (info) => {
-      console.log('info: ', info)
-
       if (!checkFileSize(info.file)) {
         return
       }

@@ -108,13 +108,11 @@ export default defineComponent({
     const visible = ref(false)
 
     const canvasInstanceList = computed(() => store.state.canvasInstanceList)
-    console.log('canvasInstanceList: ', canvasInstanceList)
 
     const showModal = () => {
       visible.value = true
     }
     const handleOk = (e) => {
-      console.log(e)
       visible.value = false
     }
     const handleCancel = () => {
@@ -122,8 +120,6 @@ export default defineComponent({
     }
 
     const handleClickOk = () => {
-      console.log(1)
-      console.log('props.onOk: ', props.onOk)
       props.onOk()
     }
     const goNextPage = () => {
@@ -146,9 +142,7 @@ export default defineComponent({
 
     const isDisabled = ref(false)
     const downloadPDF2 = () => {
-      console.log(2)
-
-      // console.log('canvasInstanceList.value[0]: ', canvasInstanceList.value[0])
+      //
       // downloadPDF(canvasInstanceList.value[0])
       downloadMultiPagePDF(canvasInstanceList.value)
     }

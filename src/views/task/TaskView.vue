@@ -129,7 +129,10 @@
     <!-- <a-card class="sign-card"> 123 </a-card> -->
     <div class="task-content">
       <div class="container">
-        <a-empty image="/static/empty_state.png" :image-style="{}">
+        <a-empty
+          image="/2022-f2e-week2/static/empty_state.png"
+          :image-style="{}"
+        >
           <template #description>
             <span>目前尚無需簽署的文件</span>
           </template>
@@ -230,13 +233,10 @@ export default defineComponent({
       }
     ])
     const handleMenuClick = (e) => {
-      console.log('click', e)
       router.push('/sign-and-send/')
     }
 
-    const clickBtn = () => {
-      console.log('clickBtn')
-    }
+    const clickBtn = () => {}
     return {
       handleMenuClick,
       options1,

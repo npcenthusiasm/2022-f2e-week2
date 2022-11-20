@@ -547,7 +547,6 @@ export default defineComponent({
     }
 
     const goNextPage = () => {
-      console.log(123)
       router.push({ name: 'compelete' })
     }
 
