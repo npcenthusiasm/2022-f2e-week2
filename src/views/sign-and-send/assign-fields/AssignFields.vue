@@ -15,15 +15,15 @@
       >
         <div class="logo" />
         <a-menu v-model:selectedKeys="sideNavSelcted" mode="inline">
-          <a-menu-item key="1" @click="clickSignBtn">
+          <a-menu-item key="nav-name" @click="clickSignBtn('name')">
             <PieChartOutlined />
             <span>簽名</span>
           </a-menu-item>
-          <a-menu-item key="2">
+          <a-menu-item key="nav-date" @click="clickSignBtn('date')">
             <DesktopOutlined />
             <span>日期</span>
           </a-menu-item>
-          <a-menu-item key="3">
+          <a-menu-item key="nav-text" @click="clickSignBtn('text')">
             <DesktopOutlined />
             <span>文字</span>
           </a-menu-item>
@@ -63,7 +63,7 @@
       <CreateSignCanvas v-if="modeIs('sign')" @compeleteSign="compeleteSign" />
 
       <!-- 簽名 -->
-      <div v-else>
+      <div v-else-if="modeIs('signDefault')">
         <a-tabs v-model:activeKey="modalMenuTabSelected">
           <a-tab-pane key="1">
             <template #tab>
@@ -104,6 +104,52 @@
           /></a-button>
         </div>
       </div>
+      <!-- 日期 -->
+      <div v-else-if="modeIs('date')">
+        <div>
+          <a-radio-group v-model:value="selectedDate">
+            <a-row :gutter="[16, 16]" :wrap="true">
+              <a-col
+                class="gutter-row"
+                :span="12"
+                v-for="date in dateList"
+                :key="date.id"
+              >
+                <div class="gutter-box">
+                  <a-radio-button
+                    :style="{
+                      width: '100%',
+                      'text-align': 'center'
+                    }"
+                    :value="date.text"
+                  >
+                    {{ date.text }}
+                  </a-radio-button>
+                </div>
+              </a-col>
+            </a-row>
+          </a-radio-group>
+        </div>
+
+        <a-button class="save" type="primary" @click="clickUseDateBtn"
+          >使用
+        </a-button>
+      </div>
+      <!-- 文字 -->
+      <div v-else-if="modeIs('text')">
+        <div>
+          <a-input
+            v-model:value="selectedText"
+            size="large"
+            placeholder="請輸入文字"
+          >
+          </a-input>
+        </div>
+
+        <a-button class="save" type="primary" @click="clickUseTexteBtn"
+          >使用
+        </a-button>
+      </div>
     </a-modal>
 
     <div
@@ -132,7 +178,8 @@ import CreateSignCanvas from '@/components/assign-fields/CreateSignCanvas.vue'
 import PDFDrawer from '@/components/sign-and-send/PDFDrawer.vue'
 import AssignFiieldHeader from '@/components/assign-fields/AssignFiieldHeader.vue'
 import AssignFieldsContent from '@/components/assign-fields/AssignFieldsContent.vue'
-import { useLocalStorage, useMouse } from '@vueuse/core'
+import { useMouse } from '@vueuse/core'
+import { formatDateString } from '../../../helper/date'
 
 export default defineComponent({
   components: {
@@ -148,35 +195,59 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const mouse = reactive(useMouse())
-    const historyStorage = useLocalStorage('img', [])
-    console.log('historyStorage: ', historyStorage)
 
     const signSampleDom = ref(null)
     // modal
     const modalVisible = ref(false)
     const modalTitle = ref('')
     // mode
-    const currnetMode = ref('')
-    // pdf sign
+    const currnetMode = ref('text') // signDefault
+    const sideNavSelcted = ref(['nav-text'])
+    // text
+    const selectedText = ref('')
+    // date
+    const selectedDate = ref('')
+    const dateList = ref([
+      { id: 1, text: formatDateString('YYYY/MM/DD') },
+      { id: 2, text: formatDateString('DD/MM/YYYY') },
+      { id: 3, text: formatDateString('YYYY-MM-DD') },
+      { id: 4, text: formatDateString('MM-DD-YYYY') }
+    ])
+    // sign
     const signHistories = computed(() => store.state.signHistories)
     const selectedSign = ref('') // img arc
+    // pdf
     const images = ref([])
     const insertMode = ref(false)
     // drawer
     const visableDrawer = ref(false)
-    // eslint-disable-next-line
-    let canvasInstanceList = []
-    // const instance = getCurrentInstance()
 
     onMounted(() => {
       store.commit('SET_PROGRESS_STATE', 2)
 
       // showModal()
       // setSignMode()
+      // clickSignBtn('text')
     })
 
-    const clickSignBtn = (e) => {
+    const clickSignBtn = (mode) => {
+      switch (mode) {
+        case 'name':
+          setSignMode('signDefault', '')
+          break
+        case 'date':
+          setSignMode('date', '日期')
+          break
+        case 'text':
+          setSignMode('text', '文字')
+          break
+        default:
+          break
+      }
       showModal()
+    }
+    const createSign = (sign) => {
+      setSignMode('sign', '創建簽名')
     }
 
     // modal - methods - start
@@ -191,18 +262,14 @@ export default defineComponent({
     }
     // modal - methods - end
 
-    const setSignMode = () => {
-      modalTitle.value = '創建簽名'
-      currnetMode.value = 'sign'
+    const setSignMode = (mode, title) => {
+      currnetMode.value = mode
+      modalTitle.value = title
     }
 
     const setDefaultMode = () => {
       modalTitle.value = ''
-      currnetMode.value = ''
-    }
-
-    const createSign = (sign) => {
-      setSignMode()
+      currnetMode.value = 'signDefault'
     }
 
     const modeIs = (mode) => {
@@ -211,7 +278,7 @@ export default defineComponent({
 
     const afterCloseModal = () => {
       // reset mode
-      currnetMode.value = ''
+      currnetMode.value = 'signDefault'
     }
 
     const compeleteSign = (newImgSrc) => {
@@ -226,43 +293,81 @@ export default defineComponent({
       handleCancel()
       insertMode.value = true
     }
+    const clickUseDateBtn = () => {
+      handleCancel()
+      insertMode.value = true
+    }
+
+    const clickUseTexteBtn = () => {
+      handleCancel()
+      insertMode.value = true
+    }
 
     const clickFollowBtn = () => {}
 
-    const clickCanvas = (canvas, page) => {
-      if (!insertMode.value) return
+    const handleDatePaste = (canvas) => {
+      const left = canvas._previousPointer.x
 
-      console.log(canvas)
-      console.log('page: ', page)
-      // const selectedSign = selectedSign.value
-      // console.log('history: ', history)
-      console.log('history: ', history.imgSrc)
-      console.log(1)
-      // TODO:
+      const top = canvas._previousPointer.y
+
+      const text = new window.fabric.Text(selectedDate.value, {
+        left,
+        top,
+        hasControls: true
+      })
+
+      canvas.add(text)
+    }
+
+    const handleTextPaste = (canvas) => {
+      const left = canvas._previousPointer.x
+      const top = canvas._previousPointer.y
+
+      const text = new window.fabric.Text(selectedText.value, {
+        left,
+        top,
+        hasControls: true
+      })
+
+      canvas.add(text)
+    }
+
+    const handleNamePaste = (canvas) => {
       addImgToCanvasBySrc(canvas, {
         x: mouse.x,
         y: mouse.y,
-        imgSrc: selectedSign.value,
-        page
+        imgSrc: selectedSign.value
       })
-      console.log(6)
+    }
+    const clickCanvas = (canvas, page) => {
+      if (!insertMode.value) return
 
-      insertMode.value = false
+      const navSelect = sideNavSelcted.value[0]
+      if (navSelect === 'nav-name') {
+        handleNamePaste(canvas)
+        insertMode.value = false
+        return
+      }
+
+      if (navSelect === 'nav-date') {
+        handleDatePaste(canvas)
+        insertMode.value = false
+
+        return
+      }
+      if (navSelect === 'nav-text') {
+        handleTextPaste(canvas)
+        insertMode.value = false
+      }
     }
 
     const addImgToCanvasBySrc = (canvas, options) => {
-      console.log(2)
-
-      console.log('canvas: ', canvas)
       // const vm = this
       // TODO: retur promise to await
       window.fabric.Image.fromURL(options.imgSrc, function (image) {
-        console.log(3)
-
         const left = canvas._previousPointer.x
-        console.log('left: ', left)
+
         const top = canvas._previousPointer.y
-        console.log('top: ', top)
 
         // 設定簽名出現的位置及大小，後續可調整
         image.top = top
@@ -271,9 +376,7 @@ export default defineComponent({
         image.scaleY = 0.4
 
         canvas.add(image)
-        console.log(4)
       })
-      console.log(5)
     }
 
     const updateImages = (_images) => {
@@ -309,7 +412,7 @@ export default defineComponent({
       afterCloseModal,
       // sideer layout
       collapsed: ref(false),
-      sideNavSelcted: ref(['1']),
+      sideNavSelcted,
       // previre
       visableDrawer,
       togglePreviewSide,
@@ -322,7 +425,14 @@ export default defineComponent({
       signSampleDom,
       insertMode,
       clickFollowBtn,
-      clickCanvas
+      clickCanvas,
+      // date
+      selectedDate,
+      dateList,
+      clickUseDateBtn,
+      // text
+      selectedText,
+      clickUseTexteBtn
     }
   }
 })
