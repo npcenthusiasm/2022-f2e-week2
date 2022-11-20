@@ -250,4 +250,25 @@ export default defineComponent({
   //   display: flex;
   //   flex-direction: column;
 }
+
+// .view-wrapper {
+//   display: flex;
+//   height: 100%;
+// }
+
+// .viewer-container {
+//   display: inline-flex;
+//   flex-direction: column;
+//   height: 100%;
+//   overflow: hidden;
+// }
+.viewer {
+  //   display: flex;
+  //   flex-direction: column;
+  //   height: 100%;
+  //   justify-content: center;
+  //   align-items: center;
+  //   overflow-y: auto;
+  // height: calc(100vh - 2600px);
+}
 </style>

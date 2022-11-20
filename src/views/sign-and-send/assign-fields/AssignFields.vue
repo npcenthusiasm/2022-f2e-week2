@@ -36,7 +36,8 @@
         </a-menu>
       </a-layout-sider>
 
-      <a-layout style="position: relative; overflow: hidden">
+      <!-- relative 是給 PDFDrawer 定位用 -->
+      <a-layout style="position: relative">
         <PDFDrawer
           :visable="visableDrawer"
           @onClose="drawerOnClose"
@@ -58,7 +59,7 @@
     <!-- modal -->
     <a-modal
       v-model:visible="modalVisible"
-      width="646px"
+      :width="modalWidth"
       :title="modalTitle"
       :afterClose="afterCloseModal"
       @ok="handleOk"
@@ -83,28 +84,52 @@
 
         <div v-if="modalMenuTabSelected === '1'">
           <!-- modal 使用簽名 -->
-          <a-button class="save" type="primary" @click="clickUseBtn"
-            >使用
-          </a-button>
-          <a-radio-group v-model:value="selectedSign">
-            <a-radio-button
-              :value="sign.imgSrc"
-              v-for="sign in signHistories"
-              :key="sign.id"
-            >
-              <img :src="sign.imgSrc" alt="" height="50" />
-            </a-radio-button>
-          </a-radio-group>
 
-          <a-button
-            block
-            class="sign-btn"
-            @click="createSign"
-            style="height: 50px"
-          >
-            創建簽名
-            <PlusOutlined
-          /></a-button>
+          <a-space :size="16" direction="vertical" style="display: flex">
+            <a-radio-group
+              class="w-full"
+              v-model:value="selectedSign"
+              v-if="signHistories.length > 0"
+            >
+              <a-row :gutter="[16, 16]" :wrap="true">
+                <a-col
+                  class="gutter-row"
+                  :span="24"
+                  v-for="sign in signHistories"
+                  :key="sign.id"
+                >
+                  <div class="gutter-box">
+                    <a-radio-button
+                      :style="{
+                        width: '100%',
+                        'text-align': 'center'
+                      }"
+                      :value="sign.imgSrc"
+                    >
+                      <img
+                        :src="sign.imgSrc"
+                        alt=""
+                        height="50"
+                        class="custom-sign-img"
+                      />
+                    </a-radio-button>
+                  </div>
+                </a-col>
+              </a-row>
+            </a-radio-group>
+            <a-button class="save" type="primary" @click="clickUseBtn"
+              >使用
+            </a-button>
+            <a-button
+              block
+              class="sign-btn"
+              @click="createSign"
+              style="height: 50px"
+            >
+              創建簽名
+              <PlusOutlined
+            /></a-button>
+          </a-space>
         </div>
 
         <div v-else-if="modalMenuTabSelected === '2'">
@@ -153,34 +178,12 @@
 
         <!-- modal 使用簽名 -->
         <a-button class="save" type="primary" @click="clickUseBtn"
-          >使用
+          >使用2
         </a-button>
-
-        <div v-if="modalMenuTabSelected === '1'">
-          <a-radio-group v-model:value="selectedSign">
-            <a-radio-button
-              :value="sign.imgSrc"
-              v-for="sign in signHistories"
-              :key="sign.id"
-            >
-              <img :src="sign.imgSrc" alt="" height="50" />
-            </a-radio-button>
-          </a-radio-group>
-
-          <a-button
-            block
-            class="sign-btn"
-            @click="createSign"
-            style="height: 50px"
-          >
-            創建簽名
-            <PlusOutlined
-          /></a-button>
-        </div>
       </div>
       <!-- 日期 -->
       <div v-else-if="modeIs('date')">
-        <div>
+        <a-space :size="16" direction="vertical" style="display: flex">
           <a-radio-group v-model:value="selectedDate">
             <a-row :gutter="[16, 16]" :wrap="true">
               <a-col
@@ -203,26 +206,26 @@
               </a-col>
             </a-row>
           </a-radio-group>
-        </div>
 
-        <a-button class="save" type="primary" @click="clickUseDateBtn"
-          >使用
-        </a-button>
+          <a-button class="save" type="primary" @click="clickUseDateBtn"
+            >使用
+          </a-button>
+        </a-space>
       </div>
       <!-- 文字 -->
       <div v-else-if="modeIs('text')">
-        <div>
+        <a-space :size="16" direction="vertical" style="display: flex">
           <a-input
             v-model:value="selectedText"
             size="large"
             placeholder="請輸入文字"
           >
           </a-input>
-        </div>
 
-        <a-button class="save" type="primary" @click="clickUseTexteBtn"
-          >使用
-        </a-button>
+          <a-button class="save" type="primary" @click="clickUseTexteBtn"
+            >使用
+          </a-button>
+        </a-space>
       </div>
     </a-modal>
 
@@ -290,6 +293,18 @@ export default defineComponent({
     // modal
     const modalVisible = ref(false)
     const modalTitle = ref('')
+    const modalWidth = computed(() => {
+      // 簽名板
+      if (
+        sideNavSelcted.value[0] === 'nav-name' &&
+        currnetMode.value === 'sign' &&
+        modalMenuTabSelected.value === '1'
+      ) {
+        return '646px'
+      }
+
+      return '412px'
+    })
     // mode
     const currnetMode = ref('text') // signDefault
     const sideNavSelcted = ref(['nav-text'])
@@ -552,6 +567,7 @@ export default defineComponent({
       modalTitle,
       modalVisible,
       modalMenuTabSelected,
+      modalWidth,
       showModal,
       handleOk,
       handleCancel,
@@ -606,7 +622,8 @@ export default defineComponent({
 
   .layout-content {
     margin: 16px;
-
+    height: calc(100vh - 180px);
+    overflow: auto;
     @include ipad {
       margin: 24px 32px;
     }
@@ -618,10 +635,14 @@ export default defineComponent({
 
   .page-layout {
     // FIXME:
-    min-height: 100vh;
+
     // height: calc(100vh - 68px - 64px);
     .ant-layout-sider {
       background-color: #fff;
+    }
+
+    ::v-deep(.ant-layout) {
+      overflow: hidden;
     }
 
     ::v-deep(.ant-layout-sider-trigger) {

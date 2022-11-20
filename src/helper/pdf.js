@@ -1,3 +1,8 @@
+
+// 因為是以外部引入的方式使用套件，因此需要做環境設定
+window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://mozilla.github.io/pdf.js/build/pdf.worker.js'
+
 const readBlob = (blob) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()

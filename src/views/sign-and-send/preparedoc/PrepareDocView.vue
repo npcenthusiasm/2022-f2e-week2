@@ -103,6 +103,7 @@ import {
 import { onBeforeRouteUpdate, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import SignSendNavbar from '@/components/sign-and-send/SignSendNavbar.vue'
+import { message } from 'ant-design-vue'
 
 export default defineComponent({
   components: {
@@ -172,9 +173,14 @@ export default defineComponent({
       if (pdfFile) {
         formState.user.name = pdfFile.name
         formState.user.email = pdfFile.name
-        getPDFTotalPages(pdfFile.originFileObj).then((pages) => {
-          totalPages.value = pages
-        })
+        getPDFTotalPages(pdfFile.originFileObj)
+          .then((pages) => {
+            totalPages.value = pages
+          })
+          .catch((err) => {
+            console.log('err: ', err)
+            message.warn('發生未知錯誤')
+          })
       }
     })
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="task-page">
+  <div class="sign-send-page">
     <SignSendNavbar :okBtn="false" :modalOk="modalOk" />
     <div class="desktop-container">
       <a-card class="sign-card">
@@ -29,8 +29,6 @@
         </div>
       </a-card>
     </div>
-
-    <div class="task-content"></div>
   </div>
 </template>
 
@@ -73,12 +71,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/assets/css/mixin';
-.task-container {
-  padding-top: 10%;
-  max-width: 1010px;
-}
 
-.task-page {
+.sign-send-page {
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -88,21 +82,6 @@ export default defineComponent({
 
   ::v-deep(.ant-tabs-nav) {
     margin-bottom: 40px;
-  }
-
-  .header-menu {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .task-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
   }
 
   .desktop-container {

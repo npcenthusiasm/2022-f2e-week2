@@ -125,7 +125,7 @@ export default defineComponent({
 
   .page-layout {
     // FIXME:
-    min-height: 100vh;
+    // min-height: 100vh;
     // height: calc(100vh - 68px - 64px);
     .ant-layout-sider {
       background-color: #fff;
