@@ -1,8 +1,12 @@
 <template>
   <a-space :size="0" class="tool-bar">
-    <a-button class="tool-btn"><PlusOutlined /></a-button>
-    <a-button class="tool-btn"><MinusOutlined /></a-button>
-    <a-button class="tool-btn"><CompressOutlined /></a-button>
+    <a-button class="tool-btn" @click="clickScaleUp"><PlusOutlined /></a-button>
+    <a-button class="tool-btn" @click="clickScaleDown"
+      ><MinusOutlined
+    /></a-button>
+    <a-button class="tool-btn" @click="$emit('toggleScreen')"
+      ><CompressOutlined
+    /></a-button>
     <!-- 測試用 -->
     <input
       type="file"
@@ -10,9 +14,9 @@
       accept="application/pdf"
       @change="inputOnChange2"
     />
-    <a-button class="download" type="primary" @click="downloadPDF2"
+    <!-- <a-button class="download" type="primary" @click="downloadPDF2"
       >下載PDF
-    </a-button>
+    </a-button> -->
     <!-- 測試用 -->
   </a-space>
 
@@ -53,7 +57,13 @@ import PDFDrawer from '@/components/sign-and-send/PDFDrawer.vue'
 import { downloadMultiPagePDF } from '@/helper/downloadPDF'
 
 export default defineComponent({
-  emits: ['updateImages', 'clickCanvas'],
+  emits: [
+    'updateImages',
+    'clickCanvas',
+    'clickScaleUp',
+    'clickScaleDown',
+    'toggleScreen'
+  ],
   components: {
     PageCanvas,
     CreateSignCanvas,
@@ -69,19 +79,19 @@ export default defineComponent({
     const images = ref([])
     let canvasInstanceList = []
     const totalPages = ref(0)
+    // const scale = ref(1 / window.devicePixelRatio)
 
     onMounted(() => {
+      message.success({
+        content: '載入中 ...',
+        prefixCls: 'bg-primary'
+      })
+
       const pdfFile = store.state.pdfFile
 
       if (pdfFile) {
         renderPDF(pdfFile.originFileObj)
       }
-
-      message.success({
-        // duration: 20,
-        content: '載入中 ...',
-        prefixCls: 'bg-primary'
-      })
     })
     /**
      *
@@ -90,7 +100,13 @@ export default defineComponent({
     const inputOnChange2 = (e) => {
       canvasInstanceList = []
       pdfAllPageCanvas.value = []
-      renderPDF(e.target.files[0])
+
+      if (e.target.files[0]) {
+        renderPDF(e.target.files[0])
+        store.commit('SET_PDF_FILE', {
+          originFileObj: e.target.files[0]
+        })
+      }
     }
 
     /**
@@ -105,20 +121,13 @@ export default defineComponent({
     // }
 
     const renderPDF = async (file) => {
-      console.log('render')
       const { pagesCanvas, pages } = await printMultiPage(file)
-      console.log('printMultiPage compelete')
       totalPages.value = pages
       pdfAllPageCanvas.value = pagesCanvas
-      console.log('to')
     }
 
     const onCanvasLoaded = (page, canvas) => {
-      console.log('onCanvasLoaded')
       canvasInstanceList.push(canvas)
-
-      console.log('canvasInstanceList.length: ', canvasInstanceList.length)
-      console.log('totalPages.value: ', totalPages.value)
 
       const image = canvas.toDataURL('image/png')
 
@@ -129,7 +138,7 @@ export default defineComponent({
 
       if (canvasInstanceList.length === totalPages.value) {
         emit('updateImages', images.value)
-        console.log('store.commit')
+
         store.commit('SET_CANVAS_LIST', canvasInstanceList)
       }
     }
@@ -137,6 +146,20 @@ export default defineComponent({
     const downloadPDF2 = () => {
       downloadMultiPagePDF(canvasInstanceList)
     }
+
+    const clickScaleUp = () => {
+      //   scale.value = scale.value + 0.05
+      //   canvasInstanceList.forEach((canvas) => {
+      //     canvas.setZoom(scale.value)
+      //   })
+    }
+    const clickScaleDown = () => {
+      // scale.value = scale.value - 0.05
+      // canvasInstanceList.forEach((canvas) => {
+      //   canvas.setZoom(scale.value)
+      // })
+    }
+    const toggleScreen = () => {}
 
     return {
       // PDF
@@ -146,6 +169,11 @@ export default defineComponent({
       // props canvas
       onCanvasLoaded,
       images,
+      // tool btn
+      clickScaleUp,
+      clickScaleDown,
+      toggleScreen,
+      //
       // test
       inputOnChange2,
       downloadPDF2

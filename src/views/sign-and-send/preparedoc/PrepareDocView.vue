@@ -1,5 +1,10 @@
 <template>
   <div class="task-page">
+    <SignSendNavbar
+      :onOk="goNextPage"
+      :isDisabledOk="disableOkBtn"
+      :modalOk="modalOk"
+    />
     <div class="container max-1010 pt-10p pb-10p">
       <a-card>
         <div></div>
@@ -80,18 +85,26 @@
 import FileUploader from '@/components/sign-and-send/FileUploader.vue'
 import { getPDFTotalPages } from '@/helper/pdf'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
-import { defineComponent, onBeforeMount, onMounted, reactive, ref } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onBeforeMount,
+  onMounted,
+  reactive,
+  ref
+} from 'vue'
 import { onBeforeRouteUpdate, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import SignSendNavbar from '@/components/sign-and-send/SignSendNavbar.vue'
 
 export default defineComponent({
-  components: { FileUploader, PlusOutlined, LoadingOutlined },
+  components: { FileUploader, PlusOutlined, LoadingOutlined, SignSendNavbar },
   // beforeRouteEnter(to, from, next) {
-  //   console.log('beforeRouteEnter')
+  //
   //   // const router = useRouter()
   //   const store = useStore()
-  //   console.log('store: ', store)
-  //   console.log('store.state: ', store.state)
+  //
+  //
   //   // if (store.state.pdfFile === null) {
   //   //   router.replace({ path: '/sign-and-send/' })
   //   // } else {
@@ -114,14 +127,7 @@ export default defineComponent({
     }
 
     const validateMessages = {
-      required: '${label} is required!',
-      types: {
-        email: '${label} is not a valid email!',
-        number: '${label} is not a valid number!'
-      },
-      number: {
-        range: '${label} must be between ${min} and ${max}'
-      }
+      required: '${label}不可空白'
     }
 
     const formState = reactive({
@@ -134,16 +140,16 @@ export default defineComponent({
       }
     })
 
+    const disableOkBtn = computed(() => formState.user.name.trim() === '')
+
     onBeforeMount(() => {
       const pdfFile = store.state.pdfFile
-      console.log('pdfFile: ', pdfFile)
+
       if (!pdfFile) {
         router.replace({ path: '/task' })
       }
     })
-    onBeforeRouteUpdate((to, from) => {
-      console.log('beforeRouteEnter')
-    })
+    onBeforeRouteUpdate((to, from) => {})
 
     onMounted(() => {
       store.commit('SET_PROGRESS_STATE', 1)
@@ -154,37 +160,45 @@ export default defineComponent({
         formState.user.name = pdfFile.name
         formState.user.email = pdfFile.name
         getPDFTotalPages(pdfFile.originFileObj).then((pages) => {
-          console.log('pages: ', pages)
           totalPages.value = pages
         })
       }
     })
+
+    // const handleOk = () => {
+    //   goNextPage()
+    // }
     const goNextPage = () => {
+      console.log(123)
       router.push({ name: 'assign-fields' })
     }
-    const handleMenuClick = (e) => {
-      console.log('click', e)
-    }
+    const handleMenuClick = (e) => {}
 
     const onFinish = (values) => {
-      console.log('Success:', values)
+      console.log('values: ', values)
       goNextPage()
     }
 
-    const handleChange = (value) => {
-      console.log(`selected ${value}`)
+    const modalOk = () => {
+      store.commit('SET_PDF_FILE', null)
+      router.replace({ name: 'task' })
     }
+
+    const handleChange = (value) => {}
 
     return {
       totalPages,
       handleMenuClick,
       activeKey: ref('1'),
       formState,
+      modalOk,
       onFinish,
       layout,
       validateMessages,
       value: ref([]),
       handleChange,
+      goNextPage,
+      disableOkBtn,
       labelCol: {
         // span: 4
       },

@@ -15,10 +15,11 @@ const routes = [
       default: () => import(/* webpackChunkName: "task" */ '../views/task/TaskView.vue')
     }
   },
+
   {
     path: '/sign-and-send',
     components: {
-      navbar: () => import(/* webpackChunkName: "task" */ '../components/sign-and-send/SignSendNavbar.vue'),
+      // navbar: () => import(/* webpackChunkName: "task" */ '../components/sign-and-send/SignSendNavbar.vue'),
       default: () => import(/* webpackChunkName: "task" */ '../views/sign-and-send/IndexView.vue')
     },
     children: [
@@ -35,11 +36,17 @@ const routes = [
       {
         name: 'assign-fields',
         path: 'assign-fields',
+        meta: {
+          keepAlive: true
+        },
         component: () => import(/* webpackChunkName: "assign-fields" */ '../views/sign-and-send/assign-fields/AssignFields.vue')
       },
       {
         name: 'compelete',
         path: 'compelete',
+        meta: {
+          keepAlive: true
+        },
         component: () => import(/* webpackChunkName: "compelete" */ '../views/sign-and-send/compelete/CompeleteView.vue')
       }
     ]

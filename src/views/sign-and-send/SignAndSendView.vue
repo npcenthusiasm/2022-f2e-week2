@@ -1,5 +1,6 @@
 <template>
   <div class="task-page">
+    <SignSendNavbar :okBtn="false" :modalOk="modalOk" />
     <div class="container max-1010 pt-10p">
       <a-card class="sign-card">
         <a-tabs v-model:activeKey="activeKey">
@@ -18,26 +19,13 @@
               <span> 歷史上傳 </span>
             </template>
           </a-tab-pane>
-
-          <div v-if="activeKey === '2'">23</div>
-          <!-- <a-tab-pane key="3">
-          <template #tab>
-            <span>
-              <SearchOutlined />
-              通知
-            </span>
-          </template>
-        </a-tab-pane> -->
         </a-tabs>
 
-        <div>
+        <div></div>
+        <div v-if="activeKey === '1'">
           <FileUploader @upload-success="uploadSuccess" />
+          檔案大小不得超過 10 MB
         </div>
-        檔案大小不得超過 10 MB
-
-        <a-button @click="$router.push({ name: 'preparedoc' })"
-          >preparedoc</a-button
-        >
       </a-card>
     </div>
 
@@ -46,14 +34,15 @@
 </template>
 
 <script>
-import FileUploader from '@/components/sign-and-send/FileUploader.vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
-
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import FileUploader from '@/components/sign-and-send/FileUploader.vue'
+import { PlusOutlined } from '@ant-design/icons-vue'
+import SignSendNavbar from '@/components/sign-and-send/SignSendNavbar.vue'
+
 export default defineComponent({
-  components: { FileUploader, PlusOutlined },
+  components: { FileUploader, PlusOutlined, SignSendNavbar },
   setup() {
     const router = useRouter()
     const store = useStore()
@@ -67,9 +56,14 @@ export default defineComponent({
     const uploadSuccess = () => {
       router.push({ name: 'preparedoc' })
     }
+
+    const modalOk = () => {
+      router.push({ name: 'task' })
+    }
     return {
       handleMenuClick,
       uploadSuccess,
+      modalOk,
       activeKey: ref('1')
     }
   }

@@ -2,7 +2,10 @@
   <div class="sign-and-send-page bg-primary">
     <router-view v-slot="{ Component }">
       <transition name="fade" mode="out-in">
+        <!-- <keep-alive :include="['AssignFields', 'CompeleteView']"> -->
+        <!-- v-if="$route.meta?.keepAlive" -->
         <component :is="Component" class="view" />
+        <!-- </keep-alive> -->
       </transition>
     </router-view>
   </div>

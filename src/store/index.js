@@ -17,9 +17,6 @@ export default createStore({
     SET_CANVAS_LIST (state, list) {
       state.canvasInstanceList = list
     },
-    SET_COMPELETE_IMG (state, src) {
-      state.compeleteSrc = src
-    },
     SET_PROGRESS_STATE (state, progress) {
       state.progress = progress
     },

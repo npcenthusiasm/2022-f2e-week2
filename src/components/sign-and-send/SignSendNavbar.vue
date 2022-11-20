@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar">
+  <div class="navbar bg-white">
     <a-steps :current="current" size="small" class="step-bar">
       <a-step title="上傳檔案" />
       <a-step title="確認上傳檔案" />
@@ -11,13 +11,19 @@
       <a-space :size="16">
         <QuestionCircleOutlined />
 
-        <a-button type="primary" ghost @click="showModal">取消</a-button>
-        <a-button type="primary" @click="goNextPage" :disabled="isDisabled"
-          >下一步</a-button
-        >
-        <a-button class="download" type="primary" @click="downloadPDF2"
+        <slot name="right">
+          <a-button type="primary" ghost @click="showModal">取消</a-button>
+          <a-button
+            type="primary"
+            v-if="okBtn"
+            @click="handleClickOk"
+            :disabled="isDisabledOk"
+            >下一步</a-button
+          >
+        </slot>
+        <!-- <a-button class="download" type="primary" @click="downloadPDF2"
           >下載PDF
-        </a-button>
+        </a-button> -->
       </a-space>
     </div>
 
@@ -27,7 +33,7 @@
 
       <template #footer>
         <a-button key="back" @click="handleCancel">取消</a-button>
-        <a-button key="submit" type="primary" @click="handleOk">確認</a-button>
+        <a-button key="submit" type="primary" @click="modalOk">確認</a-button>
       </template>
     </a-modal>
   </div>
@@ -42,7 +48,7 @@ import {
 } from '@ant-design/icons-vue'
 
 import { computed, defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 const routes = [
   {
@@ -60,14 +66,33 @@ const routes = [
 ]
 
 export default defineComponent({
+  props: {
+    okBtn: {
+      type: Boolean,
+      default: true
+    },
+    onOk: {
+      type: Function,
+      default: () => {}
+    },
+    isDisabledOk: {
+      type: Boolean,
+      default: false
+    },
+    // modal
+    modalOk: {
+      type: Function,
+      default: () => {}
+    }
+  },
   components: {
     UserOutlined,
     SearchOutlined,
     DownOutlined,
     QuestionCircleOutlined
   },
-  setup() {
-    const router = useRouter()
+  setup(props) {
+    // const router = useRouter()
     const store = useStore()
     const current = computed(() => store.state.progress)
     const visible = ref(false)
@@ -85,23 +110,28 @@ export default defineComponent({
     const handleCancel = () => {
       visible.value = false
     }
-    const goNextPage = () => {
-      switch (store.state.progress) {
-        // case 0:
-        case 1: {
-          router.push({ name: 'assign-fields' })
-          break
-        }
-        case 2: {
-          router.push({ name: 'compelete' })
-          break
-        }
-        // case 3:
 
-        default: {
-          break
-        }
-      }
+    const handleClickOk = () => {
+      console.log(1)
+      console.log('props.onOk: ', props.onOk)
+      props.onOk()
+    }
+    const goNextPage = () => {
+      // switch (store.state.progress) {
+      //   // case 0:
+      //   case 1: {
+      //     router.push({ name: 'assign-fields' })
+      //     break
+      //   }
+      //   case 2: {
+      //     router.push({ name: 'compelete' })
+      //     break
+      //   }
+      //   // case 3:
+      //   default: {
+      //     break
+      //   }
+      // }
     }
 
     const isDisabled = ref(false)
@@ -122,7 +152,8 @@ export default defineComponent({
       handleCancel,
       handleOk,
       goNextPage,
-      isDisabled
+      isDisabled,
+      handleClickOk
     }
   }
 })

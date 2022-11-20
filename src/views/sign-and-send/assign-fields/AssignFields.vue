@@ -1,5 +1,6 @@
 <template>
   <div class="assign-fields-page">
+    <SignSendNavbar :onOk="goNextPage" :modalOk="modalOk" />
     <a-layout-header class="layout-header">
       <AssignFiieldHeader
         :visableDrawer="visableDrawer"
@@ -241,7 +242,14 @@ import {
   DesktopOutlined,
   PieChartOutlined
 } from '@ant-design/icons-vue'
-import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onBeforeMount,
+  onMounted,
+  reactive,
+  ref
+} from 'vue'
 import { useStore } from 'vuex'
 import CreateSignCanvas from '@/components/assign-fields/CreateSignCanvas.vue'
 
@@ -250,15 +258,20 @@ import AssignFiieldHeader from '@/components/assign-fields/AssignFiieldHeader.vu
 import AssignFieldsContent from '@/components/assign-fields/AssignFieldsContent.vue'
 import { useMouse } from '@vueuse/core'
 import { formatDateString } from '../../../helper/date'
+import SignSendNavbar from '@/components/sign-and-send/SignSendNavbar.vue'
 import FileUploader2 from '@/components/assign-fields/FileUploader2.vue'
+import { useRouter } from 'vue-router'
+import { message } from 'ant-design-vue'
 
 export default defineComponent({
+  name: 'AssignFields',
   components: {
     AssignFiieldHeader,
     AssignFieldsContent,
     CreateSignCanvas,
     FileUploader2,
     PDFDrawer,
+    SignSendNavbar,
     // icons
     PlusOutlined,
     PieChartOutlined,
@@ -266,6 +279,8 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
+    const router = useRouter()
+
     const mouse = reactive(useMouse())
 
     const signSampleDom = ref(null)
@@ -298,6 +313,18 @@ export default defineComponent({
     const insertMode = ref(false)
     // drawer
     const visableDrawer = ref(false)
+
+    onBeforeMount(() => {
+      const pdfFile = store.state.pdfFile
+      if (!pdfFile) {
+        message.success({
+          // duration: 20,
+          content: '檔案載入失敗',
+          prefixCls: 'bg-primary'
+        })
+        router.replace({ name: 'task' })
+      }
+    })
 
     onMounted(() => {
       store.commit('SET_PROGRESS_STATE', 2)
@@ -501,6 +528,15 @@ export default defineComponent({
       })
     }
 
+    const goNextPage = () => {
+      console.log(123)
+      router.push({ name: 'compelete' })
+    }
+
+    const modalOk = () => {
+      store.commit('SET_PDF_FILE', null)
+      router.replace({ name: 'task' })
+    }
     return {
       selectedSign,
       signHistories,
@@ -544,7 +580,10 @@ export default defineComponent({
       updateLoadImageList,
       uploadSuccess,
       clickUseImgBtn,
-      selectedImg
+      selectedImg,
+      // navbar
+      modalOk,
+      goNextPage
     }
   }
 })
