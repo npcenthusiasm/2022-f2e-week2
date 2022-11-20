@@ -1,31 +1,10 @@
 <template>
   <div class="assign-fields-page">
     <a-layout-header class="layout-header">
-      <div class="header-bar">
-        <div class="doc-name-content">
-          <FormOutlined />
-          <div class="doc-name text-neutral-7'">產品測試文件</div>
-        </div>
-
-        <div class="tags-content">
-          <TagOutlined class="tag-icon" />
-          <div class="tags">
-            <a-tag color="pink">產品教學</a-tag>
-            <a-tag color="red">產品測試</a-tag>
-            <a-tag color="orange">產品測試</a-tag>
-            <a-tag color="green">產品教學</a-tag>
-          </div>
-        </div>
-
-        <div
-          class="preview-btn text-neutral-6"
-          @click="togglePreviewSide"
-          :class="visableDrawer ? ['text-primary-1'] : []"
-        >
-          <EyeOutlined />
-          <span class="preview-text">預覽</span>
-        </div>
-      </div>
+      <AssignFiieldHeader
+        :visableDrawer="visableDrawer"
+        @togglePreviewSide="togglePreviewSide"
+      />
     </a-layout-header>
 
     <a-layout class="page-layout bg-gray">
@@ -37,17 +16,22 @@
         <div class="logo" />
         <a-menu v-model:selectedKeys="sideNavSelcted" mode="inline">
           <a-menu-item key="1" @click="clickSignBtn">
-            <pie-chart-outlined />
+            <PieChartOutlined />
             <span>簽名</span>
           </a-menu-item>
           <a-menu-item key="2">
-            <desktop-outlined />
+            <DesktopOutlined />
             <span>日期</span>
           </a-menu-item>
           <a-menu-item key="3">
-            <desktop-outlined />
+            <DesktopOutlined />
             <span>文字</span>
           </a-menu-item>
+          <!--
+          <a-menu-item key="3" @click="clickFollowBtn">
+            <span>clickFollowBtn</span>
+            {{ mouse }}
+          </a-menu-item> -->
         </a-menu>
       </a-layout-sider>
 
@@ -59,46 +43,10 @@
         />
 
         <a-layout-content style="margin: 24px 32px" class="">
-          <!-- <CreateSignCanvas :pdfCanvas="pdfCanvas2" @signPate="signPate" /> -->
-          <a-space :size="0" class="tool-bar">
-            <a-button class="tool-btn"><PlusOutlined /></a-button>
-            <a-button class="tool-btn"><MinusOutlined /></a-button>
-            <a-button class="tool-btn"><CompressOutlined /></a-button>
-            <!-- 測試用 -->
-            <input
-              type="file"
-              class="select"
-              accept="application/pdf"
-              @change="inputOnChange2"
-            />
-            <!-- 測試用 -->
-          </a-space>
-
-          <div class="view-wrapper">
-            <div class="viewer-container">
-              <div class="viewer">
-                <div
-                  class="page-container"
-                  v-for="(item, index) in pdfAllPageCanvas"
-                  :key="item"
-                >
-                  <PageCanvas
-                    class=""
-                    :canvas="item"
-                    :page="index + 1"
-                    @onCanvasLoaded="onCanvasLoaded"
-                  >
-                  </PageCanvas>
-                </div>
-              </div>
-              <!-- <canvas
-              ref="pdfCanvas"
-              id="pdfCanvas"
-              width="500"
-              height="300"
-            ></canvas> -->
-            </div>
-          </div>
+          <AssignFieldsContent
+            @updateImages="updateImages"
+            @clickCanvas="clickCanvas"
+          />
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -112,12 +60,9 @@
       @ok="handleOk"
       :footer="null"
     >
-      <CreateSignCanvas
-        v-if="modeIs('sign')"
-        :pdfCanvas="pdfCanvas2"
-        @compeleteSign="compeleteSign"
-      />
-      <!-- <CreateSignCanvas v-if="false" /> -->
+      <CreateSignCanvas v-if="modeIs('sign')" @compeleteSign="compeleteSign" />
+
+      <!-- 簽名 -->
       <div v-else>
         <a-tabs v-model:activeKey="modalMenuTabSelected">
           <a-tab-pane key="1">
@@ -132,6 +77,7 @@
           </a-tab-pane>
         </a-tabs>
 
+        <!-- modal 使用簽名 -->
         <a-button class="save" type="primary" @click="clickUseBtn"
           >使用
         </a-button>
@@ -159,106 +105,75 @@
         </div>
       </div>
     </a-modal>
+
+    <div
+      v-show="insertMode"
+      ref="signSampleDom"
+      class="signSampleDom"
+      :style="{
+        top: `${mouse.y + 10}px`,
+        left: `${mouse.x + 10}px`
+      }"
+    >
+      <span class="sign-cursor-hint">點擊一處貼上</span>
+    </div>
   </div>
 </template>
 <script>
 import {
-  CompressOutlined,
-  MinusOutlined,
   PlusOutlined,
-  PieChartOutlined,
   DesktopOutlined,
-  UserOutlined,
-  TeamOutlined,
-  FileOutlined,
-  FormOutlined,
-  TagOutlined,
-  EyeOutlined
+  PieChartOutlined
 } from '@ant-design/icons-vue'
-import { defineComponent, onMounted, ref } from 'vue'
-import { message } from 'ant-design-vue'
+import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import CreateSignCanvas from '@/components/assign-fields/CreateSignCanvas.vue'
 
-import { printMultiPage } from '../../../helper/pdf'
-import PageCanvas from '@/components/assign-fields/PageCanvas.vue'
 import PDFDrawer from '@/components/sign-and-send/PDFDrawer.vue'
+import AssignFiieldHeader from '@/components/assign-fields/AssignFiieldHeader.vue'
+import AssignFieldsContent from '@/components/assign-fields/AssignFieldsContent.vue'
+import { useLocalStorage, useMouse } from '@vueuse/core'
 
 export default defineComponent({
   components: {
-    PageCanvas,
+    AssignFiieldHeader,
+    AssignFieldsContent,
     CreateSignCanvas,
     PDFDrawer,
     // icons
-    CompressOutlined,
-    MinusOutlined,
     PlusOutlined,
     PieChartOutlined,
-    DesktopOutlined,
-    UserOutlined,
-    TeamOutlined,
-    FileOutlined,
-    FormOutlined,
-    TagOutlined,
-    EyeOutlined
+    DesktopOutlined
   },
   setup() {
     const store = useStore()
+    const mouse = reactive(useMouse())
+    const historyStorage = useLocalStorage('img', [])
+    console.log('historyStorage: ', historyStorage)
+
+    const signSampleDom = ref(null)
+    // modal
     const modalVisible = ref(false)
     const modalTitle = ref('')
+    // mode
     const currnetMode = ref('')
-    const pdfCanvas2 = ref()
-    const signHistories = ref(store.state.signHistories)
+    // pdf sign
+    const signHistories = computed(() => store.state.signHistories)
     const selectedSign = ref('') // img arc
-    const pdfAllPageCanvas = ref([])
     const images = ref([])
+    const insertMode = ref(false)
+    // drawer
     const visableDrawer = ref(false)
+    // eslint-disable-next-line
+    let canvasInstanceList = []
+    // const instance = getCurrentInstance()
 
     onMounted(() => {
       store.commit('SET_PROGRESS_STATE', 2)
-      const pdfFile = store.state.pdfFile
-
-      if (pdfFile) {
-        renderPDF(pdfFile.originFileObj)
-      }
-
-      message.success({
-        // duration: 20,
-        content: '載入中 ...',
-        prefixCls: 'bg-primary'
-      })
-
-      /**
-       *
-       * for test
-       */
 
       // showModal()
       // setSignMode()
     })
-    /**
-     *
-     * for test
-     */
-    const inputOnChange2 = (e) => {
-      renderPDF(e.target.files[0])
-    }
-
-    /**
-     *
-     * for test
-     */
-
-    //
-    // const signPate = (image) => {
-    //
-    //   pdfCanvas2.value.add(image)
-    // }
-
-    const renderPDF = async (file) => {
-      const pdfAllPageData = await printMultiPage(file)
-      pdfAllPageCanvas.value = pdfAllPageData
-    }
 
     const clickSignBtn = (e) => {
       showModal()
@@ -286,7 +201,7 @@ export default defineComponent({
       currnetMode.value = ''
     }
 
-    const createSign = () => {
+    const createSign = (sign) => {
       setSignMode()
     }
 
@@ -299,51 +214,75 @@ export default defineComponent({
       currnetMode.value = ''
     }
 
-    const compeleteSign = () => {
+    const compeleteSign = (newImgSrc) => {
+      store.commit('ADD_SIGN_HISTORY', {
+        id: Date.now(),
+        imgSrc: newImgSrc
+      })
       setDefaultMode()
     }
 
     const clickUseBtn = () => {
       handleCancel()
-      // createSignImgFollowMouse()
-      signPasteFromSrc(selectedSign.value)
+      insertMode.value = true
     }
 
-    // const createSignImgFollowMouse = (src) => {
+    const clickFollowBtn = () => {}
 
-    // }
+    const clickCanvas = (canvas, page) => {
+      if (!insertMode.value) return
 
-    const signPasteFromSrc = (src) => {
+      console.log(canvas)
+      console.log('page: ', page)
+      // const selectedSign = selectedSign.value
+      // console.log('history: ', history)
+      console.log('history: ', history.imgSrc)
+      console.log(1)
+      // TODO:
+      addImgToCanvasBySrc(canvas, {
+        x: mouse.x,
+        y: mouse.y,
+        imgSrc: selectedSign.value,
+        page
+      })
+      console.log(6)
+
+      insertMode.value = false
+    }
+
+    const addImgToCanvasBySrc = (canvas, options) => {
+      console.log(2)
+
+      console.log('canvas: ', canvas)
       // const vm = this
-      window.fabric.Image.fromURL(src, function (image) {
+      // TODO: retur promise to await
+      window.fabric.Image.fromURL(options.imgSrc, function (image) {
+        console.log(3)
+
+        const left = canvas._previousPointer.x
+        console.log('left: ', left)
+        const top = canvas._previousPointer.y
+        console.log('top: ', top)
+
         // 設定簽名出現的位置及大小，後續可調整
-        image.top = 400
-        image.scaleX = 0.5
-        image.scaleY = 0.5
-        pdfCanvas2.value.add(image)
+        image.top = top
+        image.left = left
+        image.scaleX = 0.4
+        image.scaleY = 0.4
 
-        const resultImg = pdfCanvas2.value.toDataURL('image/png')
-        store.commit('SET_COMPELETE_IMG', resultImg)
-
-        // vm.$emit('signPate', image)
-        // vm.pdfCanvas.add(image)
+        canvas.add(image)
+        console.log(4)
       })
+      console.log(5)
     }
 
-    const onCanvasLoaded = (page, canvas) => {
-      const image = canvas.toDataURL('image/png')
-
-      images.value.push({
-        page,
-        image
-      })
+    const updateImages = (_images) => {
+      images.value = []
+      images.value = _images
     }
+
     const togglePreviewSide = () => {
-      if (visableDrawer.value) {
-        drawerOnClose()
-      } else {
-        showPreviewSide()
-      }
+      visableDrawer.value ? drawerOnClose() : showPreviewSide()
     }
     const showPreviewSide = () => {
       visableDrawer.value = true
@@ -351,6 +290,7 @@ export default defineComponent({
     const drawerOnClose = () => {
       visableDrawer.value = false
     }
+
     return {
       selectedSign,
       signHistories,
@@ -359,10 +299,6 @@ export default defineComponent({
       clickSignBtn,
       createSign,
       clickUseBtn,
-      pdfCanvas2,
-      // PDF
-      pdfAllPageCanvas,
-      renderPDF,
       // modal
       modalTitle,
       modalVisible,
@@ -380,10 +316,13 @@ export default defineComponent({
       showPreviewSide,
       drawerOnClose,
       // props canvas
-      onCanvasLoaded,
       images,
-      // test
-      inputOnChange2
+      updateImages,
+      mouse,
+      signSampleDom,
+      insertMode,
+      clickFollowBtn,
+      clickCanvas
     }
   }
 })
@@ -420,84 +359,9 @@ export default defineComponent({
     }
   }
 
-  .header-bar {
-    display: flex;
-    align-items: center;
-    .doc-name {
-      margin-left: 16px;
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .tags-content {
-      margin-left: 32px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .tag-icon {
-        margin-right: 16px;
-      }
-    }
-
-    .doc-name-content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-
-  .tool-bar {
-    margin-bottom: 16px;
-    .tool-btn {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-
   .sign-btn {
     display: block;
     width: 100%;
   }
-
-  .page-container {
-    margin-bottom: 20px;
-    //   height: 100%;
-    //   min-height: 0;
-    //   flex-shrink: 0;
-    //   display: flex;
-    //   flex-direction: column;
-  }
-
-  .preview-btn {
-    margin-left: auto;
-    font-weight: 500;
-    cursor: pointer;
-    .preview-text {
-      margin-left: 8px;
-    }
-  }
-
-  // .view-wrapper {
-  //   display: flex;
-  //   height: 100%;
-  // }
-
-  // .viewer-container {
-  //   display: inline-flex;
-  //   flex-direction: column;
-  //   height: 100%;
-  //   overflow: hidden;
-  // }
-  // .viewer {
-  //   display: flex;
-  //   flex-direction: column;
-  //   height: 100%;
-  //   justify-content: center;
-  //   align-items: center;
-  //   overflow-y: auto;
-  // }
 }
 </style>

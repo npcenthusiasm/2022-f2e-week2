@@ -1,5 +1,5 @@
 <template>
-  <div class="page-canvas">
+  <div class="page-canvas" @click="$emit('clickCanvas', selfCanvas, page)">
     <canvas ref="canvasDom" width="500" height="300"></canvas>
   </div>
 </template>
@@ -9,7 +9,7 @@ import { pdfToImage } from '@/helper/pdf'
 import { defineComponent, onMounted, ref } from '@vue/runtime-core'
 
 export default defineComponent({
-  emits: ['onCanvasLoaded'],
+  emits: ['onCanvasLoaded', 'clickCanvas'],
   props: {
     canvas: {
       type: HTMLCanvasElement
@@ -20,6 +20,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const canvasDom = ref(null)
+    const selfCanvas = ref()
 
     onMounted(() => {
       renaderCanvas()
@@ -39,11 +40,14 @@ export default defineComponent({
       canvas.setBackgroundImage(pdfImage, canvas.renderAll.bind(canvas))
 
       emit('onCanvasLoaded', props.page, canvas)
+
+      selfCanvas.value = canvas
     }
 
     return {
       renaderCanvas,
-      canvasDom
+      canvasDom,
+      selfCanvas
     }
   }
 })

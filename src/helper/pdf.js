@@ -42,6 +42,7 @@ export const printMultiPage = async (pdfData) => {
   const data = atob(pdfData.substring(Base64Prefix.length))
   const pdfDoc = await window.pdfjsLib.getDocument({ data }).promise
   const totalPages = pdfDoc.numPages
+  console.log('totalPages: ', totalPages)
 
   const createPageCanvas = async (page) => {
     const pdfPage = await pdfDoc.getPage(page)
@@ -70,5 +71,8 @@ export const printMultiPage = async (pdfData) => {
     pagesCanvas.push(pCanvas)
   }
 
-  return pagesCanvas
+  return {
+    pagesCanvas,
+    pages: totalPages
+  }
 }

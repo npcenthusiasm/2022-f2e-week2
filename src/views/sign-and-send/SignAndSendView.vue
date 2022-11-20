@@ -38,7 +38,6 @@
         <a-button @click="$router.push({ name: 'preparedoc' })"
           >preparedoc</a-button
         >
-        <!-- <FileUp /> -->
       </a-card>
     </div>
 
@@ -47,7 +46,6 @@
 </template>
 
 <script>
-// import FileUp from '@/components/sign-and-send/FileUp.vue'
 import FileUploader from '@/components/sign-and-send/FileUploader.vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 

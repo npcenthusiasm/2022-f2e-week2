@@ -51,16 +51,11 @@
 <script>
 import { downloadPDF } from '../../helper/downloadPDF'
 import { PlusOutlined } from '@ant-design/icons-vue'
-import store from '@/store'
+// import store from '@/store'
 export default {
   emits: ['compeleteSign'],
   components: {
     PlusOutlined
-  },
-  props: {
-    pdfCanvas: {
-      type: Object
-    }
   },
   data() {
     return {
@@ -147,25 +142,8 @@ export default {
     },
     clickSaveBtn() {
       const newImgSrc = this.canvasInstance.toDataURL('image/png')
-      store.commit('ADD_SIGN_HISTORY', {
-        id: 1,
-        imgSrc: newImgSrc
-      })
-      this.$emit('compeleteSign')
-      // this.saveImage()
-      // this.signPasteFromSrc(newImgSrc)
-    },
-    signPasteFromSrc(src) {
-      const vm = this
-      window.fabric.Image.fromURL(src, function (image) {
-        // 設定簽名出現的位置及大小，後續可調整
-        image.top = 400
-        image.scaleX = 0.5
-        image.scaleY = 0.5
-        console.log('vm.pdfCanvas: ', vm.pdfCanvas)
-        // vm.$emit('signPate', image)
-        vm.pdfCanvas.add(image)
-      })
+
+      this.$emit('compeleteSign', newImgSrc)
     },
     // 測試用
     // saveImage() {

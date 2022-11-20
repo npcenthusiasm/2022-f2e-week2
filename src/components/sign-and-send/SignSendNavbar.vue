@@ -33,7 +33,7 @@
   </div>
 </template>
 <script>
-import { downloadPDF } from '@/helper/downloadPDF'
+import { downloadMultiPagePDF } from '@/helper/downloadPDF'
 import {
   SearchOutlined,
   UserOutlined,
@@ -71,6 +71,10 @@ export default defineComponent({
     const store = useStore()
     const current = computed(() => store.state.progress)
     const visible = ref(false)
+
+    const canvasInstanceList = computed(() => store.state.canvasInstanceList)
+    console.log('canvasInstanceList: ', canvasInstanceList)
+
     const showModal = () => {
       visible.value = true
     }
@@ -104,7 +108,9 @@ export default defineComponent({
     const downloadPDF2 = () => {
       console.log(2)
 
-      downloadPDF(this.canvasInstance)
+      // console.log('canvasInstanceList.value[0]: ', canvasInstanceList.value[0])
+      // downloadPDF(canvasInstanceList.value[0])
+      downloadMultiPagePDF(canvasInstanceList.value)
     }
     return {
       downloadPDF2,

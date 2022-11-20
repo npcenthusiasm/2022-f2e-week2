@@ -1,15 +1,22 @@
 import { createStore } from 'vuex'
+import { useLocalStorage } from '@vueuse/core'
+
+const historyStorage = useLocalStorage('img', [])
 
 export default createStore({
   state: {
     compeleteSrc: '',
     progress: 0,
     pdfFile: null,
-    signHistories: []
+    signHistories: historyStorage,
+    canvasInstanceList: []
   },
   getters: {
   },
   mutations: {
+    SET_CANVAS_LIST (state, list) {
+      state.canvasInstanceList = list
+    },
     SET_COMPELETE_IMG (state, src) {
       state.compeleteSrc = src
     },
@@ -22,6 +29,7 @@ export default createStore({
     },
     ADD_SIGN_HISTORY (state, data) {
       state.signHistories.push(data)
+      // historyStorage.value.set(state.signHistories)
       // console.log('state.pdfFile: ', state.pdfFile)
     }
   },

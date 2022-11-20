@@ -190,3 +190,20 @@ $colors: (
   //   background-color: transparent;
   // }
 }
+
+.signSampleDom {
+  width: 95px;
+  height: 35px;
+  border-radius: 8px;
+  background-color: #4F8BFF;
+  position: fixed;
+  z-index: 20000;
+  top:0;
+
+  .sign-cursor-hint {
+    position: absolute;
+    top: 35px;
+    font-size: 14px;
+    color: #4F8BFF;;
+  }
+}
