@@ -1,24 +1,40 @@
 <template>
-  <a-space :size="0" class="tool-bar">
-    <a-button class="tool-btn" @click="clickScaleUp"><PlusOutlined /></a-button>
-    <a-button class="tool-btn" @click="clickScaleDown"
-      ><MinusOutlined
-    /></a-button>
-    <a-button class="tool-btn" @click="$emit('toggleScreen')"
-      ><CompressOutlined
-    /></a-button>
-    <!-- 測試用 -->
-    <input
-      type="file"
-      class="select"
-      accept="application/pdf"
-      @change="inputOnChange2"
-    />
-    <!-- <a-button class="download" type="primary" @click="downloadPDF2"
-      >下載PDF
-    </a-button> -->
-    <!-- 測試用 -->
-  </a-space>
+  <div class="tool-bar-container">
+    <a-space :size="0" class="tool-bar">
+      <a-button class="tool-btn" @click="clickScaleUp"
+        ><PlusOutlined
+      /></a-button>
+      <a-button class="tool-btn" @click="clickScaleDown"
+        ><MinusOutlined
+      /></a-button>
+      <a-button class="tool-btn" @click="$emit('toggleScreen')"
+        ><CompressOutlined
+      /></a-button>
+      <!-- 測試用 -->
+      <!-- <input
+        type="file"
+        class="select"
+        accept="application/pdf"
+        @change="inputOnChange2"
+      /> -->
+      <!-- <a-button class="download" type="primary" @click="downloadPDF2"
+          >下載PDF
+        </a-button> -->
+      <!-- 測試用 -->
+    </a-space>
+    <a-space :size="0" class="tool-bar mobile">
+      <a-button class="tool-btn" @click="$emit('clickSign')"
+        ><EditOutlined
+      /></a-button>
+
+      <a-button class="tool-btn" @click="$emit('clickDate')">
+        <CalendarOutlined />
+      </a-button>
+      <a-button class="tool-btn" @click="$emit('clickText')"
+        ><FontSizeOutlined
+      /></a-button>
+    </a-space>
+  </div>
 
   <div class="view-wrapper">
     <div class="viewer-container">
@@ -44,8 +60,15 @@
 import {
   CompressOutlined,
   MinusOutlined,
-  PlusOutlined
+  PlusOutlined,
+  EditOutlined,
+  CalendarOutlined,
+  FontSizeOutlined
 } from '@ant-design/icons-vue'
+
+// import CalendarSvg from '../svg/CalendarSvg.vue'
+// import TextSvg from '../svg/TextSvg.vue'
+
 import { defineComponent, onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { useStore } from 'vuex'
@@ -62,7 +85,10 @@ export default defineComponent({
     'clickCanvas',
     'clickScaleUp',
     'clickScaleDown',
-    'toggleScreen'
+    'toggleScreen',
+    'clickSign',
+    'clickDate',
+    'clickText'
   ],
   components: {
     PageCanvas,
@@ -71,7 +97,11 @@ export default defineComponent({
     // icons
     CompressOutlined,
     MinusOutlined,
-    PlusOutlined
+    PlusOutlined,
+    EditOutlined,
+    FontSizeOutlined,
+    CalendarOutlined
+    // CalendarSvg
   },
   setup(props, { emit }) {
     const store = useStore()
@@ -84,7 +114,7 @@ export default defineComponent({
     onMounted(() => {
       message.success({
         content: '載入中 ...',
-        prefixCls: 'bg-primary'
+        prefixCls: 'bg-neutral-2'
       })
 
       const pdfFile = store.state.pdfFile
@@ -182,80 +212,42 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-.assign-fields-page {
-  .layout-header {
-    position: relative;
-    z-index: 10;
-    background-color: #fff;
-    padding-left: 24px;
-    padding-right: 24px;
-    filter: drop-shadow(0px 0px 15px rgba(25, 26, 27, 0.08));
+@import '@/assets/css/mixin';
+
+.tool-bar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tool-bar {
+  margin-bottom: 16px;
+  .tool-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .site-layout .site-layout-background {
-    background: #fff;
-  }
-
-  .page-layout {
-    // FIXME:
-    min-height: 100vh;
-    // height: calc(100vh - 68px - 64px);
-    .ant-layout-sider {
-      background-color: #fff;
-    }
-
-    ::v-deep(.ant-layout-sider-trigger) {
-      background-color: #1890ff;
-    }
-
-    .layout-sider {
-      box-shadow: 0px 0px 15px rgba(25, 26, 27, 0.08);
+  &.mobile {
+    display: flex;
+    @include ipad {
+      display: none;
     }
   }
+}
 
-  .tool-bar {
-    margin-bottom: 16px;
-    .tool-btn {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
+.sign-btn {
+  display: block;
+  width: 100%;
+}
 
-  .sign-btn {
-    display: block;
-    width: 100%;
-  }
-
-  .page-container {
-    margin-bottom: 20px;
-    //   height: 100%;
-    //   min-height: 0;
-    //   flex-shrink: 0;
-    //   display: flex;
-    //   flex-direction: column;
-  }
-
-  // .view-wrapper {
-  //   display: flex;
+.page-container {
+  margin-bottom: 20px;
   //   height: 100%;
-  // }
-
-  // .viewer-container {
-  //   display: inline-flex;
-  //   flex-direction: column;
-  //   height: 100%;
-  //   overflow: hidden;
-  // }
-  // .viewer {
+  //   min-height: 0;
+  //   flex-shrink: 0;
   //   display: flex;
   //   flex-direction: column;
-  //   height: 100%;
-  //   justify-content: center;
-  //   align-items: center;
-  //   overflow-y: auto;
-  // }
 }
 </style>

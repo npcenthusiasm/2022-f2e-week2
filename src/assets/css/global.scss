@@ -1,34 +1,15 @@
+
+@import './mixin';
+
 .container {
   position: relative;
   margin-left: auto;
   margin-right: auto;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 16px;
+  padding-left: 16px;
 }
-@media (min-width: 476px) {
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-@media (min-width: 768px) {
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
+
+
 @media (min-width: 476px) {
   .container {
     width: 100%;
@@ -70,24 +51,15 @@
   padding-bottom: 10%;
 }
 
-
 .mb-15 {
   margin-bottom: 60px !important;
-}
-$primary: #f1f2f5;
-$gray: #EFEFEF;
-.bg-primary {
-  background-color: $primary;
-}
-
-.bg-gray {
-  background-color: $gray;
 }
 
 .cursor-pointer {
   cursor: pointer;
 }
 
+$gray: #EFEFEF;
 $white: #ffffff;
 $black: #000000;
 
@@ -121,6 +93,7 @@ $peach: #ff9d7a;
 $colors: (
   'white': $white,
   'black': $black,
+  'gray': $gray,
   // neutral
   'neutral-1': $neutral-1,
   'neutral-2': $neutral-2,

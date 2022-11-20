@@ -5,11 +5,14 @@
       :isDisabledOk="disableOkBtn"
       :modalOk="modalOk"
     />
-    <div class="container max-1010 pt-10p pb-10p">
-      <a-card>
+    <div class="container max-1010">
+      <a-card class="doc-card">
         <div></div>
         <div class="doc-card-header">
-          <router-link to="/sign-and-send/">上一步</router-link>
+          <router-link to="/sign-and-send/">
+            <LeftOutlined />
+            上一步</router-link
+          >
         </div>
         <a-form
           :label-col="labelCol"
@@ -84,7 +87,11 @@
 <script>
 import FileUploader from '@/components/sign-and-send/FileUploader.vue'
 import { getPDFTotalPages } from '@/helper/pdf'
-import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
+import {
+  PlusOutlined,
+  LoadingOutlined,
+  LeftOutlined
+} from '@ant-design/icons-vue'
 import {
   computed,
   defineComponent,
@@ -98,7 +105,13 @@ import { useStore } from 'vuex'
 import SignSendNavbar from '@/components/sign-and-send/SignSendNavbar.vue'
 
 export default defineComponent({
-  components: { FileUploader, PlusOutlined, LoadingOutlined, SignSendNavbar },
+  components: {
+    PlusOutlined,
+    LoadingOutlined,
+    LeftOutlined,
+    FileUploader,
+    SignSendNavbar
+  },
   // beforeRouteEnter(to, from, next) {
   //
   //   // const router = useRouter()
@@ -218,37 +231,49 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.doc-card-header {
-  margin-bottom: 42px;
-}
+@import '@/assets/css/mixin';
 
-.update-file-info {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-variant: tabular-nums;
-  list-style: none;
-  font-feature-settings: 'tnum';
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  min-width: 0;
-  padding: 4px 11px;
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 14px;
-  line-height: 1.5715;
-  background-color: #fff;
-  background-image: none;
-  border: 1px solid #d9d9d9;
-  border-radius: 2px;
-  transition: all 0.3s;
-  cursor: default;
-
-  .page {
-    font-size: 12px;
+.doc-card {
+  margin-top: 28px;
+  @include ipad {
+    margin-top: 116px;
   }
-  .file-info-name {
-    font-weight: 700;
+  ::v-deep(.ant-card-body) {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .doc-card-header {
+    margin-bottom: 42px;
+  }
+
+  .update-file-info {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-variant: tabular-nums;
+    list-style: none;
+    font-feature-settings: 'tnum';
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    min-width: 0;
+    padding: 4px 11px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    line-height: 1.5715;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    transition: all 0.3s;
+    cursor: default;
+
+    .page {
+      font-size: 12px;
+    }
+    .file-info-name {
+      font-weight: 700;
+    }
   }
 }
 </style>

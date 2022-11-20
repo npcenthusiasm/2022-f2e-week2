@@ -13,14 +13,16 @@
         @togglePreviewSide="togglePreviewSide"
       />
     </a-layout-header>
-    <a-layout class="page-layout bg-gray">
-      <div class="compelete-view">
-        <img :src="compeleteSrc" alt="" />
-        <div v-for="image in images" :key="image" class="preview-item">
-          <img :src="image" alt="" />
+    <div class="container">
+      <a-layout class="page-layout bg-gray">
+        <div class="compelete-view">
+          <img :src="compeleteSrc" alt="" />
+          <div v-for="image in images" :key="image" class="preview-item">
+            <img :src="image" alt="" />
+          </div>
         </div>
-      </div>
-    </a-layout>
+      </a-layout>
+    </div>
   </div>
 </template>
 <script>
@@ -103,6 +105,7 @@ export default defineComponent({
   align-items: center;
   img {
     margin-bottom: 20px;
+    max-width: 100%;
   }
 }
 

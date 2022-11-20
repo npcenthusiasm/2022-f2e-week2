@@ -46,6 +46,8 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/mixin';
+
 .header-bar {
   display: flex;
   align-items: center;
@@ -57,9 +59,12 @@ export default defineComponent({
 
   .tags-content {
     margin-left: 32px;
-    display: flex;
     justify-content: center;
     align-items: center;
+    display: none;
+    @include ipad {
+      display: flex;
+    }
     .tag-icon {
       margin-right: 16px;
     }

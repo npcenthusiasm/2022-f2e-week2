@@ -4,7 +4,7 @@
       <img src="~@/assets/images/Logo.png" alt="" class="logo" width="89" />
     </div>
 
-    <div>
+    <div class="header-tabs">
       <a-tabs v-model:activeKey="activeKey" centered>
         <a-tab-pane key="1">
           <template #tab>
@@ -106,6 +106,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/css/mixin';
+
 .navbar {
   display: flex;
   flex-direction: row;
@@ -129,6 +131,13 @@ export default defineComponent({
   .username {
     display: inline-block;
     padding: 0 8px;
+  }
+
+  .header-tabs {
+    display: none;
+    @include ipad {
+      display: block;
+    }
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="task-page">
     <SignSendNavbar :okBtn="false" :modalOk="modalOk" />
-    <div class="container max-1010 pt-10p">
+    <div class="desktop-container">
       <a-card class="sign-card">
         <a-tabs v-model:activeKey="activeKey">
           <a-tab-pane key="1">
@@ -24,7 +24,8 @@
         <div></div>
         <div v-if="activeKey === '1'">
           <FileUploader @upload-success="uploadSuccess" />
-          檔案大小不得超過 10 MB
+
+          <span class="text-neutral-6">檔案大小不得超過 10 MB</span>
         </div>
       </a-card>
     </div>
@@ -71,6 +72,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/css/mixin';
 .task-container {
   padding-top: 10%;
   max-width: 1010px;
@@ -83,6 +85,11 @@ export default defineComponent({
   background-color: #f1f2f5;
 
   margin: 0 auto;
+
+  ::v-deep(.ant-tabs-nav) {
+    margin-bottom: 40px;
+  }
+
   .header-menu {
     display: flex;
     align-items: center;
@@ -98,8 +105,25 @@ export default defineComponent({
     min-height: 100vh;
   }
 
+  .desktop-container {
+    max-width: 1024px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
   .sign-card {
+    margin-top: 28px;
     padding-bottom: 80px;
+    @include ipad {
+      margin-top: 116px;
+    }
+
+    ::v-deep(.ant-upload) {
+      width: 100%;
+      height: 280px;
+    }
   }
 }
 </style>

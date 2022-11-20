@@ -1,13 +1,26 @@
 <template>
   <div class="navbar bg-white">
-    <a-steps :current="current" size="small" class="step-bar">
+    <a-steps :current="current" size="small" class="step-bar desktop">
       <a-step title="上傳檔案" />
       <a-step title="確認上傳檔案" />
       <a-step title="製作簽署檔案" />
       <a-step title="下載簽署檔案" />
     </a-steps>
 
-    <div>
+    <a-steps
+      :current="current"
+      :responsive="false"
+      direction="horizontal"
+      size="small"
+      class="step-bar mobile"
+    >
+      <a-step />
+      <a-step />
+      <a-step />
+      <a-step />
+    </a-steps>
+
+    <div class="button-content">
       <a-space :size="16">
         <QuestionCircleOutlined />
 
@@ -21,9 +34,6 @@
             >下一步</a-button
           >
         </slot>
-        <!-- <a-button class="download" type="primary" @click="downloadPDF2"
-          >下載PDF
-        </a-button> -->
       </a-space>
     </div>
 
@@ -160,17 +170,32 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/css/mixin';
+
 .navbar {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 0px 16px;
-
-  height: 68px;
-
+  min-height: 68px;
   border-bottom: 1px solid #f1f2f5;
+  padding-top: 16px;
+  padding-bottom: 16px;
   box-shadow: 0px 0px 15px rgba(25, 26, 27, 0.08);
+
+  @include ipad {
+    flex-direction: row;
+  }
+
+  .button-content {
+    margin-top: 16px;
+    align-self: flex-end;
+    @include ipad {
+      margin-top: 0px;
+      align-self: initial;
+    }
+  }
 
   ::v-deep(.ant-page-header-content) {
     padding-top: 0;
@@ -187,7 +212,21 @@ export default defineComponent({
 
   .step-bar {
     margin: 0 0;
-    max-width: 65%;
+
+    &.desktop {
+      max-width: 65%;
+      display: none;
+      @include ipad {
+        display: flex;
+      }
+    }
+
+    &.mobile {
+      max-width: 100%;
+      @include ipad {
+        display: none;
+      }
+    }
   }
 }
 </style>

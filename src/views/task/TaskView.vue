@@ -40,7 +40,7 @@
           </a-tab-pane>
         </a-tabs>
 
-        <div class="dp-btn">
+        <div class="desktop-menu-btn">
           <a-dropdown :trigger="['click']" overlayClassName="task-dp">
             <template #overlay>
               <a-menu @click="handleMenuClick">
@@ -136,6 +136,44 @@
         </a-empty>
       </div>
     </div>
+
+    <a-dropdown
+      :trigger="['click']"
+      overlayClassName="task-dp"
+      class="mobile-menu-btn"
+      placement="topRight"
+    >
+      <template #overlay>
+        <a-menu @click="handleMenuClick">
+          <a-menu-item key="1">
+            <div class="dp-item">
+              <SignInvitationSvg class="dp-item-img" />
+              <div>
+                <div class="text-black title">自己簽署</div>
+                <div class="text-neutral-6 desc">你是文件唯一簽署者</div>
+              </div>
+            </div>
+          </a-menu-item>
+          <a-menu-item key="2">
+            <div class="dp-item">
+              <SignPersonallySvg class="dp-item-img" />
+              <div>
+                <div class="text-black title">邀請他人簽署</div>
+                <div class="text-neutral-6 desc">指派簽署欄位給其他簽署人</div>
+              </div>
+            </div>
+          </a-menu-item>
+        </a-menu>
+      </template>
+      <a-button type="primary" size="large">
+        <template #icon>
+          <PlusOutlined />
+        </template>
+      </a-button>
+    </a-dropdown>
+    <!-- <button @click="clickBtn">
+      <PlusOutlined />
+    </button> -->
   </div>
 </template>
 
@@ -195,6 +233,10 @@ export default defineComponent({
       console.log('click', e)
       router.push('/sign-and-send/')
     }
+
+    const clickBtn = () => {
+      console.log('clickBtn')
+    }
     return {
       handleMenuClick,
       options1,
@@ -202,13 +244,16 @@ export default defineComponent({
       selectedType,
       selectedTag,
       search,
-      activeKey: ref('1')
+      activeKey: ref('1'),
+      clickBtn
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/css/mixin';
+
 .task-page {
   display: flex;
   flex-direction: column;
@@ -241,16 +286,45 @@ export default defineComponent({
   }
 
   .query-bar {
-    display: flex;
     justify-content: space-between;
     align-items: center;
     padding-top: 32px;
     padding-left: 16px;
     padding-right: 16px;
+    display: none;
+    @include ipad {
+      display: flex;
+    }
   }
 
   .tag-select {
     margin-left: 24px;
+  }
+
+  .desktop-menu-btn {
+    display: none;
+    @include ipad {
+      display: block;
+    }
+  }
+  .mobile-menu-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    position: fixed;
+    width: 56px;
+    height: 56px;
+    right: 20px;
+    bottom: 20px;
+    background: #3175fa;
+    color: white;
+    border: none;
+    box-shadow: 0px 0px 20px rgba(25, 26, 27, 0.15);
+    border-radius: 50px;
+    @include ipad {
+      display: none;
+    }
   }
 }
 </style>

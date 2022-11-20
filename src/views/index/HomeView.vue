@@ -1,94 +1,98 @@
 <template>
-  <div class="home">
-    <img src="~@/assets/images/Logo.png" alt="" class="logo" />
-    <img src="~@/assets/images/home-bg.png" alt="" class="home-bg" />
+  <div class="home-page">
+    <div class="container home">
+      <img src="~@/assets/images/Logo.png" alt="" class="logo" />
+      <img src="~@/assets/images/home-bg.png" alt="" class="home-bg" />
 
-    <a-card class="home-card">
-      <a-tabs v-model:activeKey="activeKey" centered class="home-tabs">
-        <a-tab-pane class="login-pane" key="1" tab="登入">
-          <div>
-            <!-- <a-button type="primary" block html-type="submit">登入</a-button> -->
-            <a-space :size="32" class="oauth-btn-wrap">
-              <a-button type="primary" size="large" class="oauth-login-btn">
-                <template #icon>
-                  <!-- <LockOutlined class="site-form-item-icon" /> -->
-                  <img
-                    src="~@/assets/images/facebook.svg"
-                    alt=""
-                    width="30"
-                    height="30"
-                  />
-                </template>
-              </a-button>
-              <a-button type="primary" size="large" class="oauth-login-btn">
-                <template #icon>
-                  <img src="~@/assets/images/google.svg" alt="" />
-                </template>
-              </a-button>
-            </a-space>
-          </div>
-          <a-divider class="text-gray">或使用電子信箱登入</a-divider>
-
-          <a-form
-            :model="formState"
-            name="basic"
-            autocomplete="off"
-            @finish="onFinish"
-            @finishFailed="onFinishFailed"
-          >
-            <a-form-item
-              name="username"
-              placeholder="123213"
-              :rules="[{ required: true, message: '' }]"
-            >
-              <a-input
-                v-model:value="formState.username"
-                size="large"
-                placeholder="請輸入您的電子信箱"
-              >
-                <template #prefix>
-                  <MailOutlined class="site-form-item-icon" />
-                </template>
-              </a-input>
-            </a-form-item>
-
-            <a-form-item
-              name="password"
-              :rules="[{ required: true, message: '' }]"
-            >
-              <a-input-password
-                v-model:value="formState.password"
-                size="large"
-                placeholder="請輸入您的密碼"
-              >
-                <template #prefix>
-                  <LockOutlined class="site-form-item-icon" />
-                </template>
-              </a-input-password>
-            </a-form-item>
-
-            <a-form-item>
-              <a-button
-                type="primary"
-                block
-                size="large"
-                :disabled="disabledSubmitBtn"
-                html-type="submit"
-                >登入</a-button
-              >
-            </a-form-item>
-          </a-form>
-
-          <div class="card-footer">
-            <div class="text-gray">
-              還沒有帳號？
-              <a-typography-link href=""> 註冊 </a-typography-link>
+      <a-card class="home-card">
+        <a-tabs v-model:activeKey="activeKey" centered class="home-tabs">
+          <a-tab-pane class="login-pane" key="1" tab="登入">
+            <div>
+              <!-- <a-button type="primary" block html-type="submit">登入</a-button> -->
+              <a-space :size="32" class="oauth-btn-wrap">
+                <a-button type="primary" size="large" class="oauth-login-btn">
+                  <template #icon>
+                    <!-- <LockOutlined class="site-form-item-icon" /> -->
+                    <img
+                      src="~@/assets/images/facebook.svg"
+                      alt=""
+                      width="30"
+                      height="30"
+                    />
+                  </template>
+                </a-button>
+                <a-button type="primary" size="large" class="oauth-login-btn">
+                  <template #icon>
+                    <img src="~@/assets/images/google.svg" alt="" />
+                  </template>
+                </a-button>
+              </a-space>
             </div>
-          </div>
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="註冊" force-render> <a-empty /></a-tab-pane>
-      </a-tabs>
-    </a-card>
+            <a-divider class="home-divider text-gray"
+              >或使用電子信箱登入</a-divider
+            >
+
+            <a-form
+              :model="formState"
+              name="basic"
+              autocomplete="off"
+              @finish="onFinish"
+              @finishFailed="onFinishFailed"
+            >
+              <a-form-item
+                name="username"
+                placeholder="123213"
+                :rules="[{ required: true, message: '' }]"
+              >
+                <a-input
+                  v-model:value="formState.username"
+                  size="large"
+                  placeholder="請輸入您的電子信箱"
+                >
+                  <template #prefix>
+                    <MailOutlined class="site-form-item-icon" />
+                  </template>
+                </a-input>
+              </a-form-item>
+
+              <a-form-item
+                name="password"
+                :rules="[{ required: true, message: '' }]"
+              >
+                <a-input-password
+                  v-model:value="formState.password"
+                  size="large"
+                  placeholder="請輸入您的密碼"
+                >
+                  <template #prefix>
+                    <LockOutlined class="site-form-item-icon" />
+                  </template>
+                </a-input-password>
+              </a-form-item>
+
+              <a-form-item>
+                <a-button
+                  type="primary"
+                  block
+                  size="large"
+                  :disabled="disabledSubmitBtn"
+                  html-type="submit"
+                  >登入</a-button
+                >
+              </a-form-item>
+            </a-form>
+
+            <div class="card-footer">
+              <div class="text-gray">
+                還沒有帳號？
+                <a-typography-link href=""> 註冊 </a-typography-link>
+              </div>
+            </div>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="註冊" force-render> <a-empty /></a-tab-pane>
+        </a-tabs>
+      </a-card>
+    </div>
   </div>
 </template>
 
@@ -109,11 +113,11 @@ export default defineComponent({
       password: '',
       remember: true
     })
-    const onFinish = values => {
+    const onFinish = (values) => {
       console.log('Success:', values)
       router.push({ name: 'task' })
     }
-    const onFinishFailed = errorInfo => {
+    const onFinishFailed = (errorInfo) => {
       console.log('Failed:', errorInfo)
     }
 
@@ -132,27 +136,42 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/css/mixin';
+.home-page {
+  background-color: #dcecff;
+}
 .home {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  background-color: #dcecff;
   min-height: 100vh;
+
+  @include ipad {
+    margin-bottom: 80px;
+    justify-content: center;
+    align-items: center;
+  }
   .home-card {
     font-size: 16px;
     max-width: 527px;
-    // max-height: 497px;
-    // height: 100%;
     width: 100%;
   }
 
   .logo {
-    margin-bottom: 80px;
+    margin-bottom: 24px;
+    width: 127px;
+    padding-top: 24px;
+    @include ipad {
+      padding-top: 0px;
+      margin-bottom: 80px;
+      width: initial;
+    }
   }
   .login-pane {
-    padding-left: 60px;
-    padding-right: 60px;
+    @include ipad {
+      padding-left: 60px;
+      padding-right: 60px;
+    }
   }
 
   .oauth-btn-wrap {
@@ -178,9 +197,17 @@ export default defineComponent({
   }
 
   .home-bg {
-    position: absolute;
-    bottom: 0;
-    right: 111px;
+    display: none;
+    @include ipad {
+      display: block;
+      position: absolute;
+      bottom: 0;
+      right: 111px;
+    }
+  }
+  .home-divider {
+    margin: 32px 0;
+    font-size: 14px;
   }
 }
 

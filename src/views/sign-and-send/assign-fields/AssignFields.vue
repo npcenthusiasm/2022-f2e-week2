@@ -43,10 +43,13 @@
           :images="images"
         />
 
-        <a-layout-content style="margin: 24px 32px" class="">
+        <a-layout-content class="layout-content">
           <AssignFieldsContent
             @updateImages="updateImages"
             @clickCanvas="clickCanvas"
+            @clickSign="clickSignBtn('name')"
+            @clickDate="clickSignBtn('date')"
+            @clickText="clickSignBtn('text')"
           />
         </a-layout-content>
       </a-layout>
@@ -320,7 +323,7 @@ export default defineComponent({
         message.success({
           // duration: 20,
           content: '檔案載入失敗',
-          prefixCls: 'bg-primary'
+          prefixCls: 'bg-neutral-2'
         })
         router.replace({ name: 'task' })
       }
@@ -589,6 +592,8 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/mixin';
+
 .assign-fields-page {
   .layout-header {
     position: relative;
@@ -597,6 +602,14 @@ export default defineComponent({
     padding-left: 24px;
     padding-right: 24px;
     filter: drop-shadow(0px 0px 15px rgba(25, 26, 27, 0.08));
+  }
+
+  .layout-content {
+    margin: 16px;
+
+    @include ipad {
+      margin: 24px 32px;
+    }
   }
 
   .site-layout .site-layout-background {
@@ -616,6 +629,10 @@ export default defineComponent({
     }
 
     .layout-sider {
+      display: none;
+      @include ipad {
+        display: block;
+      }
       box-shadow: 0px 0px 15px rgba(25, 26, 27, 0.08);
     }
   }
